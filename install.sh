@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions
+brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat
 brew install --cask alacritty
 
 # alacritty
@@ -50,3 +50,4 @@ echo "Add to .zshrc if not already:"
 echo '  export PATH="$HOME/bin:$PATH"'
 echo '  eval "$(starship init zsh)"'
 echo '  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh'
+echo '  source ~/dotfiles/.aliases'

@@ -16,7 +16,11 @@ fi
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y tmux zsh zsh-autosuggestions
+    sudo apt-get install -y tmux zsh zsh-autosuggestions bat
+    # eza (newer Ubuntu has it, older needs gpg key)
+    if ! command -v eza &> /dev/null; then
+        sudo apt-get install -y eza 2>/dev/null || echo "eza not in apt, skipping"
+    fi
 fi
 
 # install starship
@@ -62,6 +66,7 @@ if [ ! -f ~/.zshrc ] || ! grep -q 'starship init' ~/.zshrc 2>/dev/null; then
 # dotfiles config
 eval "$(starship init zsh)"
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/dotfiles/.aliases
 EOF
     echo "Added config to .zshrc"
 fi
