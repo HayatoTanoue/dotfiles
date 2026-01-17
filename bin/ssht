@@ -9,7 +9,7 @@
 # dev レイアウト:
 # Window 1 (dev):
 # ┌──────────────┬─────────────────────┐
-# │    yazi      │                     │
+# │  filetree    │                     │
 # ├──────────────┤     terminal        │
 # │ git-summary  │                     │
 # └──────────────┴─────────────────────┘
@@ -86,7 +86,7 @@ if [ "$MODE" = "dev" ]; then
     else
       tmux new-session -s ${SESSION_NAME} -n dev -c \"\$TARGET_DIR\" \\; \\
         split-window -hb -l 35% -c \"\$TARGET_DIR\" \\; \\
-        send-keys \"yazi \\\"\$TARGET_DIR\\\"\" C-m \\; \\
+        send-keys \"ft \\\"\$TARGET_DIR\\\"\" C-m \\; \\
         split-window -v -l 50% -c \"\$TARGET_DIR\" \\; \\
         send-keys \"watch -c -n 2 git-summary\" C-m \\; \\
         new-window -n git -c \"\$TARGET_DIR\" \\; \\

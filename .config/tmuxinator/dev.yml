@@ -5,7 +5,7 @@
 # レイアウト:
 # Window 1 (dev):
 # ┌──────────────┬─────────────────────┐
-# │    yazi      │                     │
+# │  filetree    │                     │
 # ├──────────────┤     terminal        │
 # │ git-summary  │                     │
 # └──────────────┴─────────────────────┘
@@ -23,7 +23,7 @@ windows:
         main-pane-width: 65%
       panes:
         - ""                              # 右: メインターミナル (65%)
-        - yazi                            # 左上: ファイルツリー
+        - ft                              # 左上: ファイルツリー
         - watch -c -n 2 git-summary       # 左下: git状態
 
   - git: lazygit

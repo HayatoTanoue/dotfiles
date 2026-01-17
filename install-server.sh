@@ -59,21 +59,18 @@ if ! command -v lazygit &> /dev/null; then
     cd -
 fi
 
-# install yazi (musl版でGLIBC依存なし)
-if ! command -v yazi &> /dev/null; then
-    echo "Installing yazi..."
-    YAZI_VERSION=$(curl -s "https://api.github.com/repos/sxyazi/yazi/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-    ARCH=$(uname -m)
-    if [ "$ARCH" = "x86_64" ]; then
-        ARCH="x86_64"
-    elif [ "$ARCH" = "aarch64" ]; then
-        ARCH="aarch64"
-    fi
-    curl -sLo /tmp/yazi.zip "https://github.com/sxyazi/yazi/releases/latest/download/yazi-${ARCH}-unknown-linux-musl.zip"
-    cd /tmp && unzip -o yazi.zip
-    sudo mv yazi-${ARCH}-unknown-linux-musl/yazi /usr/local/bin/
-    rm -rf yazi-${ARCH}-unknown-linux-musl yazi.zip
-    cd -
+# install rust (for filetree)
+if ! command -v cargo &> /dev/null; then
+    echo "Installing Rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
+fi
+
+# install filetree
+if ! command -v ft &> /dev/null; then
+    echo "Installing filetree..."
+    source "$HOME/.cargo/env" 2>/dev/null || true
+    cargo install filetree
 fi
 
 # install cheat
@@ -114,6 +111,9 @@ ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 # setup .zshrc
 if ! grep -q 'PATH.*bin' ~/.zshrc 2>/dev/null; then
     echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
+fi
+if ! grep -q 'cargo/env' ~/.zshrc 2>/dev/null; then
+    echo 'source "$HOME/.cargo/env" 2>/dev/null || true' >> ~/.zshrc
 fi
 if ! grep -q 'starship init' ~/.zshrc 2>/dev/null; then
     echo 'eval "$(starship init zsh)"' >> ~/.zshrc

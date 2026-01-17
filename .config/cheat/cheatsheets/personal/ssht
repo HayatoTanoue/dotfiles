@@ -34,7 +34,7 @@ ssht myserver dev vgc         再接続 (セッション維持)
 ## レイアウト: dev
 Window 1 (dev):
 ┌─────────┬─────────────────────┐
-│  yazi   │                     │
+│  filetree   │                     │
 ├─────────┤     terminal        │
 │   tig   │                     │
 └─────────┴─────────────────────┘
@@ -42,7 +42,7 @@ Window 1 (dev):
 Window 2 (git): lazygit
 
 ## ウィンドウ切り替え
-C-a 1       dev (yazi + tig + terminal)
+C-a 1       dev (filetree + tig + terminal)
 C-a 2       git (lazygit)
 
 ## ペイン移動
