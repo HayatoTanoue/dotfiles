@@ -8,12 +8,12 @@
 #
 # dev レイアウト:
 # Window 1 (dev):
-# ┌─────────┬─────────────────────┐
-# │  yazi   │                     │
-# ├─────────┤     terminal        │
-# │   tig   │                     │
-# └─────────┴─────────────────────┘
-#    35%             65%
+# ┌──────────────┬─────────────────────┐
+# │    yazi      │                     │
+# ├──────────────┤     terminal        │
+# │ git-summary  │                     │
+# └──────────────┴─────────────────────┘
+#      35%                65%
 #
 # Window 2 (git): lazygit
 
@@ -88,7 +88,7 @@ if [ "$MODE" = "dev" ]; then
         split-window -hb -l 35% -c \"\$TARGET_DIR\" \\; \\
         send-keys \"yazi \\\"\$TARGET_DIR\\\"\" C-m \\; \\
         split-window -v -l 50% -c \"\$TARGET_DIR\" \\; \\
-        send-keys \"tig\" C-m \\; \\
+        send-keys \"watch -c -n 2 git-summary\" C-m \\; \\
         new-window -n git -c \"\$TARGET_DIR\" \\; \\
         send-keys \"lazygit\" C-m \\; \\
         select-window -t dev \\; \\

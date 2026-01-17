@@ -1,0 +1,52 @@
+#!/bin/bash
+# git-summary - シンプルなgit状態表示
+# 使い方: git-summary または watch -c -n 2 git-summary
+
+# 色定義
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+# gitリポジトリかチェック
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo -e "${RED}Not a git repository${NC}"
+    exit 1
+fi
+
+# ブランチ名
+BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
+echo -e "${BOLD}${GREEN} ${BRANCH}${NC}"
+echo -e "${BLUE}─────────────────────────────${NC}"
+
+# 直近のコミット (5件)
+echo -e "${BOLD}Commits:${NC}"
+git log --oneline -5 --format="${CYAN}%h${NC} %s" 2>/dev/null | while read line; do
+    echo -e "  $line"
+done
+
+# 変更ファイル
+CHANGES=$(git status --porcelain 2>/dev/null)
+if [ -n "$CHANGES" ]; then
+    echo ""
+    echo -e "${BOLD}Changes:${NC}"
+    echo "$CHANGES" | head -10 | while read line; do
+        STATUS="${line:0:2}"
+        FILE="${line:3}"
+        case "$STATUS" in
+            "M "| " M"|"MM") echo -e "  ${YELLOW}M${NC}  $FILE" ;;
+            "A ") echo -e "  ${GREEN}A${NC}  $FILE" ;;
+            "D "| " D") echo -e "  ${RED}D${NC}  $FILE" ;;
+            "??") echo -e "  ${CYAN}?${NC}  $FILE" ;;
+            *) echo -e "  ${STATUS} $FILE" ;;
+        esac
+    done
+
+    TOTAL=$(echo "$CHANGES" | wc -l | tr -d ' ')
+    if [ "$TOTAL" -gt 10 ]; then
+        echo -e "  ${CYAN}... and $((TOTAL - 10)) more${NC}"
+    fi
+fi

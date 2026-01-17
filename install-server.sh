@@ -107,7 +107,14 @@ ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
 rm -rf ~/.config/cheat/cheatsheets/personal
 ln -s "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
 
+# bin scripts
+mkdir -p ~/bin
+ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
+
 # setup .zshrc
+if ! grep -q 'PATH.*bin' ~/.zshrc 2>/dev/null; then
+    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
+fi
 if ! grep -q 'starship init' ~/.zshrc 2>/dev/null; then
     echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 fi
