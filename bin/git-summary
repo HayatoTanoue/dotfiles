@@ -8,8 +8,10 @@ YELLOW='\033[0;33m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 BOLD='\033[1m'
-NC='\033[0m' # No Color
+DIM='\033[2m'
+NC='\033[0m'
 
 # gitリポジトリかチェック
 if ! git rev-parse --is-inside-work-tree &>/dev/null; then
@@ -17,36 +19,57 @@ if ! git rev-parse --is-inside-work-tree &>/dev/null; then
     exit 1
 fi
 
-# ブランチ名
-BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
-echo -e "${BOLD}${GREEN} ${BRANCH}${NC}"
+# 現在のブランチ
+CURRENT=$(git branch --show-current 2>/dev/null || echo "detached")
+
+# ブランチ一覧 (最大5件、現在のブランチを先頭に)
+echo -e "${BOLD}Branches:${NC}"
+git branch --sort=-committerdate 2>/dev/null | head -6 | while read line; do
+    BRANCH="${line:2}"
+    if [[ "$line" == \** ]]; then
+        echo -e "  ${GREEN}${BOLD}● ${BRANCH}${NC} ${DIM}←${NC}"
+    else
+        echo -e "  ${DIM}○${NC} ${BRANCH}"
+    fi
+done
+
 echo -e "${BLUE}─────────────────────────────${NC}"
 
 # 直近のコミット (5件)
 echo -e "${BOLD}Commits:${NC}"
 git log --oneline -5 --format="${CYAN}%h${NC} %s" 2>/dev/null | while read line; do
-    echo -e "  $line"
+    # 長すぎる場合は切り詰め
+    if [ ${#line} -gt 40 ]; then
+        echo -e "  ${line:0:40}..."
+    else
+        echo -e "  $line"
+    fi
 done
 
 # 変更ファイル
 CHANGES=$(git status --porcelain 2>/dev/null)
 if [ -n "$CHANGES" ]; then
-    echo ""
+    echo -e "${BLUE}─────────────────────────────${NC}"
     echo -e "${BOLD}Changes:${NC}"
-    echo "$CHANGES" | head -10 | while read line; do
+    echo "$CHANGES" | head -8 | while read line; do
         STATUS="${line:0:2}"
         FILE="${line:3}"
+        # ファイル名が長い場合は切り詰め
+        if [ ${#FILE} -gt 25 ]; then
+            FILE="${FILE:0:22}..."
+        fi
         case "$STATUS" in
             "M "| " M"|"MM") echo -e "  ${YELLOW}M${NC}  $FILE" ;;
             "A ") echo -e "  ${GREEN}A${NC}  $FILE" ;;
             "D "| " D") echo -e "  ${RED}D${NC}  $FILE" ;;
+            "R "*) echo -e "  ${MAGENTA}R${NC}  $FILE" ;;
             "??") echo -e "  ${CYAN}?${NC}  $FILE" ;;
             *) echo -e "  ${STATUS} $FILE" ;;
         esac
     done
 
     TOTAL=$(echo "$CHANGES" | wc -l | tr -d ' ')
-    if [ "$TOTAL" -gt 10 ]; then
-        echo -e "  ${CYAN}... and $((TOTAL - 10)) more${NC}"
+    if [ "$TOTAL" -gt 8 ]; then
+        echo -e "  ${DIM}... +$((TOTAL - 8)) more${NC}"
     fi
 fi
