@@ -5,6 +5,7 @@ live_config_reload = true
 
 [terminal]
 shell = { program = "/bin/zsh", args = ["-l"] }
+osc52 = "CopyPaste"
 
 [window]
 dimensions = { columns = 120, lines = 40 }
