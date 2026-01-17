@@ -68,15 +68,14 @@ ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
 ln -sf "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
 
 # setup .zshrc
-if [ ! -f ~/.zshrc ] || ! grep -q 'starship init' ~/.zshrc 2>/dev/null; then
-    cat >> ~/.zshrc << 'EOF'
-
-# dotfiles config
-eval "$(starship init zsh)"
-source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/dotfiles/.aliases
-EOF
-    echo "Added config to .zshrc"
+if ! grep -q 'starship init' ~/.zshrc 2>/dev/null; then
+    echo 'eval "$(starship init zsh)"' >> ~/.zshrc
+fi
+if ! grep -q 'zsh-autosuggestions' ~/.zshrc 2>/dev/null; then
+    echo 'source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh' >> ~/.zshrc
+fi
+if ! grep -q 'dotfiles/.aliases' ~/.zshrc 2>/dev/null; then
+    echo 'source ~/dotfiles/.aliases' >> ~/.zshrc
 fi
 
 # change default shell to zsh
