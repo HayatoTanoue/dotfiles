@@ -1,27 +1,23 @@
 # 開発作業用テンプレート
 # 使い方: tmuxinator start dev [project_path]
+#         dev [path|alias]
 #
-# ウィンドウ構成:
-#   1. work   - yazi(左) + ターミナル(右)
-#   2. git    - lazygit フルスクリーン
-#   3. shell  - 複数ターミナル用
+# レイアウト:
+# ┌─────────┬─────────────────────┐
+# │  yazi   │                     │
+# ├─────────┤     terminal        │
+# │ lazygit │                     │
+# └─────────┴─────────────────────┘
 
 name: dev
 root: <%= @args[0] || "." %>
 
 windows:
-  - work:
+  - dev:
       layout: main-vertical
       options:
-        main-pane-width: 35%
+        main-pane-width: 65%
       panes:
-        - yazi    # 左: ファイルツリー（プレビュー付き）
-        - ""      # 右: メインターミナル
-
-  - git: lazygit
-
-  - shell:
-      layout: even-horizontal
-      panes:
-        - ""      # 左ターミナル
-        - ""      # 右ターミナル
+        - ""           # 右: メインターミナル
+        - yazi         # 左上: ファイルツリー
+        - lazygit      # 左下: git

@@ -36,16 +36,12 @@ ssht myserver dev vgc         再接続 (セッション維持)
 └──────────┴────────┘
 
 ## レイアウト: dev
-Window 1 (work):
-┌─────────┬─────────────┐
-│  yazi   │  terminal   │
-│  35%    │    65%      │
-└─────────┴─────────────┘
+┌─────────┬─────────────────────┐
+│  yazi   │                     │
+├─────────┤     terminal        │
+│ lazygit │                     │
+└─────────┴─────────────────────┘
 
-Window 2 (git):    lazygit フルスクリーン
-Window 3 (shell):  ターミナル × 2
-
-## ウィンドウ切り替え (dev構成)
-C-a 1       work (yazi + terminal)
-C-a 2       git (lazygit)
-C-a 3       shell
+## ペイン移動
+C-a h/j/k/l   vim風にペイン移動
+C-a o         次のペインへ

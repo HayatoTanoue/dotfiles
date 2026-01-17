@@ -17,19 +17,15 @@ dev vgc               エイリアスで起動
   api=~/projects/api
 
 ## レイアウト
-Window 1 (work):
-┌─────────┬─────────────┐
-│  yazi   │  terminal   │
-│  35%    │    65%      │
-└─────────┴─────────────┘
+┌─────────┬─────────────────────┐
+│  yazi   │                     │
+├─────────┤     terminal        │
+│ lazygit │                     │
+└─────────┴─────────────────────┘
 
-Window 2 (git):    lazygit フルスクリーン
-Window 3 (shell):  ターミナル × 2
-
-## ウィンドウ切り替え
-C-a 1       work (yazi + terminal)
-C-a 2       git (lazygit)
-C-a 3       shell
+## ペイン移動
+C-a h/j/k/l   vim風にペイン移動
+C-a o         次のペインへ
 
 ## 関連コマンド
 ssht <host> dev <alias>   SSH先でdev構成
