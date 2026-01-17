@@ -1,7 +1,19 @@
 #!/bin/bash
-# dotfiles installer
+# dotfiles installer (macOS)
+
+set -e
 
 DOTFILES="$HOME/dotfiles"
+
+# brew install
+if ! command -v brew &> /dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+echo "Installing packages..."
+brew install tmux
+brew install --cask alacritty
 
 # alacritty
 mkdir -p ~/.config/alacritty
