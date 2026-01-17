@@ -79,10 +79,11 @@ EOF
     echo "Added config to .zshrc"
 fi
 
-echo "Done!"
-echo ""
-echo "To use zsh:"
-echo "  1. chsh -s \$(which zsh)  # set default shell"
-echo "  2. Reconnect SSH"
-echo ""
-echo "Or run: exec zsh"
+# change default shell to zsh
+if [ "$SHELL" != "$(which zsh)" ]; then
+    echo "Changing default shell to zsh..."
+    chsh -s $(which zsh) || echo "chsh failed, run manually: chsh -s \$(which zsh)"
+fi
+
+echo "Done! Restarting shell..."
+exec zsh
