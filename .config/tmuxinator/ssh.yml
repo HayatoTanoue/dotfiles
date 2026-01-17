@@ -1,14 +1,12 @@
 # SSH作業用テンプレート
 # 使い方: tmuxinator start ssh [host]
 # 例: tmuxinator start ssh myserver
+# SSH先のtmuxセッションに接続（切断しても維持される）
 
 name: ssh-<%= @args[0] || "remote" %>
 root: ~
 
 windows:
   - main:
-      layout: main-vertical
       panes:
-        - ssh <%= @args[0] %>
-        - ssh <%= @args[0] %>
-        - ssh <%= @args[0] %>
+        - ssh <%= @args[0] %> -t 'tmux new-session -A -s main'
