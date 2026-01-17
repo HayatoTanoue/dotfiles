@@ -29,7 +29,7 @@ curl -sL https://raw.githubusercontent.com/HayatoTanoue/dotfiles/main/install-se
 cd ~/dotfiles && git pull && ./install.sh
 
 # サーバー
-cd ~/dotfiles && ./install-server.sh
+cd ~/dotfiles && git pull && ./install-server.sh
 ```
 
 ## 使い方
