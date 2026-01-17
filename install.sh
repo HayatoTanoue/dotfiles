@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux
+brew install tmux tmuxinator
 brew install --cask alacritty
 
 # alacritty
@@ -22,6 +22,10 @@ ln -sf "$DOTFILES/.config/alacritty/cheatsheet.txt" ~/.config/alacritty/cheatshe
 
 # tmux
 ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
+
+# tmuxinator
+mkdir -p ~/.config/tmuxinator
+ln -sf "$DOTFILES/.config/tmuxinator/dev.yml" ~/.config/tmuxinator/dev.yml
 
 # git config for this repo
 cd "$DOTFILES"
