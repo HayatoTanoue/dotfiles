@@ -8,6 +8,7 @@
 # ├─────────┤     terminal        │
 # │ lazygit │                     │
 # └─────────┴─────────────────────┘
+#    35%             65%
 
 name: dev
 root: <%= @args[0] || "." %>
@@ -18,6 +19,6 @@ windows:
       options:
         main-pane-width: 65%
       panes:
-        - ""           # 右: メインターミナル
+        - ""           # 右: メインターミナル (65%)
         - yazi         # 左上: ファイルツリー
         - lazygit      # 左下: git

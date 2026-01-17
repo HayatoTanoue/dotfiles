@@ -12,6 +12,7 @@
 # ├─────────┤     terminal        │
 # │ lazygit │                     │
 # └─────────┴─────────────────────┘
+#    35%             65%
 
 CONFIG_FILE="${HOME}/.config/ssht/paths"
 
@@ -72,7 +73,7 @@ else
 fi
 
 if [ "$MODE" = "dev" ]; then
-  # dev構成: 1画面 (yazi + lazygit + terminal)
+  # dev構成: 左(yazi+lazygit) + 右(terminal)
   ssh "$HOST" -t "
     TARGET_DIR=\"${DIR:-\$HOME}\"
     cd \"\$TARGET_DIR\" 2>/dev/null || TARGET_DIR=\$HOME
@@ -81,11 +82,11 @@ if [ "$MODE" = "dev" ]; then
       tmux attach -t ${SESSION_NAME}
     else
       tmux new-session -s ${SESSION_NAME} -c \"\$TARGET_DIR\" \\; \\
-        split-window -h -l 35% -c \"\$TARGET_DIR\" \\; \\
+        split-window -hb -l 35% -c \"\$TARGET_DIR\" \\; \\
         send-keys \"yazi \\\"\$TARGET_DIR\\\"\" C-m \\; \\
-        split-window -v -c \"\$TARGET_DIR\" \\; \\
+        split-window -v -l 50% -c \"\$TARGET_DIR\" \\; \\
         send-keys \"lazygit\" C-m \\; \\
-        select-pane -t 0
+        select-pane -R
     fi
   "
 else
