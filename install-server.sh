@@ -65,7 +65,8 @@ ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 # cheat config
 mkdir -p ~/.config/cheat/cheatsheets/community
 ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
-ln -sf "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
+rm -rf ~/.config/cheat/cheatsheets/personal
+ln -s "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
 
 # setup .zshrc
 if ! grep -q 'starship init' ~/.zshrc 2>/dev/null; then
