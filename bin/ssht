@@ -1,46 +1,73 @@
 #!/bin/bash
 # SSH + tmux 接続スクリプト
-# 使い方: ssht hostname [dev]
-#   ssht myserver       - 3ペイン構成
-#   ssht myserver dev   - dev構成 (yazi + lazygit)
+# 使い方: ssht hostname [dev] [path]
+#   ssht myserver                   - 3ペイン構成 (~)
+#   ssht myserver dev               - dev構成 (~)
+#   ssht myserver ~/project         - 3ペイン構成 (指定パス)
+#   ssht myserver dev ~/project     - dev構成 (指定パス)
 
 if [ -z "$1" ]; then
-  echo "Usage: ssht <hostname> [dev]"
-  echo "  ssht myserver       - 3ペイン構成"
-  echo "  ssht myserver dev   - dev構成 (yazi + lazygit)"
+  echo "Usage: ssht <hostname> [dev] [path]"
+  echo "  ssht myserver                - 3ペイン構成"
+  echo "  ssht myserver dev            - dev構成 (yazi + lazygit)"
+  echo "  ssht myserver ~/project      - 指定ディレクトリで3ペイン"
+  echo "  ssht myserver dev ~/project  - 指定ディレクトリでdev構成"
   exit 1
 fi
 
 HOST="$1"
-MODE="${2:-basic}"
+MODE="basic"
+DIR=""
+
+# 引数解析
+if [ "$2" = "dev" ]; then
+  MODE="dev"
+  DIR="${3:-}"
+elif [ -n "$2" ]; then
+  DIR="$2"
+fi
+
+# セッション名（ディレクトリ指定時はディレクトリ名を使用）
+if [ -n "$DIR" ]; then
+  SESSION_NAME=$(basename "$DIR")
+else
+  SESSION_NAME="${MODE}"
+  [ "$MODE" = "basic" ] && SESSION_NAME="main"
+fi
 
 if [ "$MODE" = "dev" ]; then
   # dev構成: work(yazi+terminal), git(lazygit), shell(2ペイン)
-  ssh "$HOST" -t '
-    if tmux has-session -t dev 2>/dev/null; then
-      tmux attach -t dev
+  ssh "$HOST" -t "
+    TARGET_DIR=\"${DIR:-\$HOME}\"
+    cd \"\$TARGET_DIR\" 2>/dev/null || TARGET_DIR=\$HOME
+
+    if tmux has-session -t ${SESSION_NAME} 2>/dev/null; then
+      tmux attach -t ${SESSION_NAME}
     else
-      tmux new-session -s dev -n work \; \
-        send-keys "yazi" C-m \; \
-        split-window -h -l 65% \; \
-        new-window -n git \; \
-        send-keys "lazygit" C-m \; \
-        new-window -n shell \; \
-        split-window -h \; \
-        select-window -t work \; \
+      tmux new-session -s ${SESSION_NAME} -n work -c \"\$TARGET_DIR\" \\; \\
+        send-keys \"yazi \\\"\$TARGET_DIR\\\"\" C-m \\; \\
+        split-window -h -l 65% -c \"\$TARGET_DIR\" \\; \\
+        new-window -n git -c \"\$TARGET_DIR\" \\; \\
+        send-keys \"lazygit\" C-m \\; \\
+        new-window -n shell -c \"\$TARGET_DIR\" \\; \\
+        split-window -h -c \"\$TARGET_DIR\" \\; \\
+        select-window -t work \\; \\
         select-pane -t 1
     fi
-  '
+  "
 else
   # basic構成: 3ペイン
-  ssh "$HOST" -t '
-    if tmux has-session -t main 2>/dev/null; then
-      tmux attach -t main
+  ssh "$HOST" -t "
+    TARGET_DIR=\"${DIR:-\$HOME}\"
+    cd \"\$TARGET_DIR\" 2>/dev/null || TARGET_DIR=\$HOME
+
+    if tmux has-session -t ${SESSION_NAME} 2>/dev/null; then
+      tmux attach -t ${SESSION_NAME}
     else
-      tmux new-session -s main \; \
-        split-window -h \; \
-        split-window -v \; \
+      tmux new-session -s ${SESSION_NAME} -c \"\$TARGET_DIR\" \\; \\
+        split-window -h -c \"\$TARGET_DIR\" \\; \\
+        split-window -v -c \"\$TARGET_DIR\" \\; \\
         select-pane -t 0
     fi
-  '
+  "
 fi

@@ -1,22 +1,31 @@
 # ssht - SSH + tmux 接続
 
 ## 基本
-ssht <host>         3ペイン構成で接続
-ssht <host> dev     dev構成で接続 (yazi + lazygit)
+ssht <host>                   3ペイン構成 (~)
+ssht <host> dev               dev構成 (~)
+ssht <host> <path>            3ペイン構成 (指定パス)
+ssht <host> dev <path>        dev構成 (指定パス)
 
 ## 例
-ssht myserver       接続 (初回: 3ペイン作成, 再接続: 既存維持)
-ssht myserver dev   dev構成で接続
-C-a d               デタッチ (ローカルに戻る)
-ssht myserver       再接続 (セッション維持されている)
+ssht myserver                 ホームで接続
+ssht myserver dev             ホームでdev構成
+ssht myserver ~/project       指定ディレクトリで接続
+ssht myserver dev ~/project   指定ディレクトリでdev構成
 
-## レイアウト: basic (デフォルト)
+## セッション管理
+C-a d                         デタッチ
+ssht myserver dev ~/project   再接続 (セッション維持)
+
+## セッション名
+- パス指定なし: main (basic) / dev (dev)
+- パス指定あり: ディレクトリ名 (例: ~/project → "project")
+
+## レイアウト: basic
 ┌──────────┬────────┐
 │          │        │
 │  メイン  ├────────┤
 │          │        │
 └──────────┴────────┘
-セッション名: main
 
 ## レイアウト: dev
 Window 1 (work):
@@ -27,7 +36,6 @@ Window 1 (work):
 
 Window 2 (git):    lazygit フルスクリーン
 Window 3 (shell):  ターミナル × 2
-セッション名: dev
 
 ## ウィンドウ切り替え (dev構成)
 C-a 1       work (yazi + terminal)
@@ -35,6 +43,5 @@ C-a 2       git (lazygit)
 C-a 3       shell
 
 ## リモートでの操作
-tmux ls                     セッション確認
-tmux kill-session -t dev    devセッション削除
-tmux kill-session -t main   mainセッション削除
+tmux ls                       セッション一覧
+tmux kill-session -t <name>   セッション削除
