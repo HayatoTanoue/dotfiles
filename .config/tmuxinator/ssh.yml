@@ -2,6 +2,7 @@
 # 使い方: tmuxinator start ssh [host]
 # 例: tmuxinator start ssh myserver
 # SSH先のtmuxセッションに接続（切断しても維持される）
+# 3ペイン分割（main-vertical）で開く
 
 name: ssh-<%= @args[0] || "remote" %>
 root: ~
@@ -9,4 +10,4 @@ root: ~
 windows:
   - main:
       panes:
-        - ssh <%= @args[0] %> -t 'tmux new-session -A -s main'
+        - ssh <%= @args[0] %> -t 'tmux new-session -A -s main \; if-shell "[ $(tmux list-panes | wc -l) -eq 1 ]" "split-window -h \; split-window -v \; select-pane -t 0"'
