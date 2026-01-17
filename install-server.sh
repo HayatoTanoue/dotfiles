@@ -59,7 +59,7 @@ if ! command -v lazygit &> /dev/null; then
     cd -
 fi
 
-# install yazi
+# install yazi (musl版でGLIBC依存なし)
 if ! command -v yazi &> /dev/null; then
     echo "Installing yazi..."
     YAZI_VERSION=$(curl -s "https://api.github.com/repos/sxyazi/yazi/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
@@ -69,10 +69,10 @@ if ! command -v yazi &> /dev/null; then
     elif [ "$ARCH" = "aarch64" ]; then
         ARCH="aarch64"
     fi
-    curl -sLo /tmp/yazi.zip "https://github.com/sxyazi/yazi/releases/latest/download/yazi-${ARCH}-unknown-linux-gnu.zip"
+    curl -sLo /tmp/yazi.zip "https://github.com/sxyazi/yazi/releases/latest/download/yazi-${ARCH}-unknown-linux-musl.zip"
     cd /tmp && unzip -o yazi.zip
-    sudo mv yazi-${ARCH}-unknown-linux-gnu/yazi /usr/local/bin/
-    rm -rf yazi-${ARCH}-unknown-linux-gnu yazi.zip
+    sudo mv yazi-${ARCH}-unknown-linux-musl/yazi /usr/local/bin/
+    rm -rf yazi-${ARCH}-unknown-linux-musl yazi.zip
     cd -
 fi
 
