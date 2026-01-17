@@ -22,6 +22,16 @@ cd ~/dotfiles && ./install.sh
 curl -sL https://raw.githubusercontent.com/HayatoTanoue/dotfiles/main/install-server.sh | bash
 ```
 
+### アップデート
+
+```bash
+# macOS
+cd ~/dotfiles && git pull && ./install.sh
+
+# サーバー
+cd ~/dotfiles && ./install-server.sh
+```
+
 ## 使い方
 
 ### SSH接続
