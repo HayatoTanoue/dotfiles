@@ -1,0 +1,35 @@
+# dev - ローカル開発環境起動
+
+## 基本
+dev                   カレントディレクトリでdev構成
+dev <path>            指定ディレクトリでdev構成
+dev <alias>           エイリアスでdev構成
+dev -h                ヘルプ & エイリアス一覧
+
+## 例
+dev                   現在地でdev構成
+dev ~/project         指定ディレクトリで起動
+dev vgc               エイリアスで起動
+
+## エイリアス設定
+~/.config/ssht/paths (ssht と共通):
+  vgc=/home/hayatotanoue/rag-moc/VGC
+  api=~/projects/api
+
+## レイアウト
+Window 1 (work):
+┌─────────┬─────────────┐
+│  yazi   │  terminal   │
+│  35%    │    65%      │
+└─────────┴─────────────┘
+
+Window 2 (git):    lazygit フルスクリーン
+Window 3 (shell):  ターミナル × 2
+
+## ウィンドウ切り替え
+C-a 1       work (yazi + terminal)
+C-a 2       git (lazygit)
+C-a 3       shell
+
+## 関連コマンド
+ssht <host> dev <alias>   SSH先でdev構成

@@ -1,0 +1,47 @@
+#!/bin/bash
+# ローカル開発環境起動スクリプト
+# 使い方: dev [path|alias]
+#   dev              - カレントディレクトリでdev構成
+#   dev ~/project    - 指定ディレクトリでdev構成
+#   dev vgc          - エイリアスでdev構成
+
+CONFIG_FILE="${HOME}/.config/ssht/paths"
+
+# エイリアス展開
+expand_alias() {
+  local alias="$1"
+  if [ -f "$CONFIG_FILE" ]; then
+    local expanded=$(grep "^${alias}=" "$CONFIG_FILE" 2>/dev/null | cut -d'=' -f2-)
+    if [ -n "$expanded" ]; then
+      echo "$expanded"
+      return
+    fi
+  fi
+  echo "$alias"
+}
+
+# ヘルプ表示
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  echo "Usage: dev [path|alias]"
+  echo ""
+  echo "Examples:"
+  echo "  dev              - カレントディレクトリでdev構成"
+  echo "  dev ~/project    - 指定ディレクトリでdev構成"
+  echo "  dev vgc          - エイリアスでdev構成"
+  echo ""
+  echo "Config: $CONFIG_FILE"
+  if [ -f "$CONFIG_FILE" ]; then
+    echo ""
+    echo "Aliases:"
+    grep -v '^#' "$CONFIG_FILE" | grep -v '^$' | sed 's/^/  /'
+  fi
+  exit 0
+fi
+
+DIR="${1:-.}"
+
+# エイリアス展開
+DIR=$(expand_alias "$DIR")
+
+# tmuxinator start dev
+tmuxinator start dev "$DIR"

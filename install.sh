@@ -35,6 +35,7 @@ ln -sf "$DOTFILES/.config/tmuxinator/ssh.yml" ~/.config/tmuxinator/ssh.yml
 # bin scripts
 mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/ssht" ~/bin/ssht
+ln -sf "$DOTFILES/bin/dev" ~/bin/dev
 
 # ssht config
 mkdir -p ~/.config/ssht
