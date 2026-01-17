@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat
+brew install tmux tmuxinator cheat starship
 brew install --cask alacritty
 
 # alacritty
@@ -41,7 +41,11 @@ cd "$DOTFILES"
 git config user.name "HayatoTanoue"
 git config user.email "HayatoTanoue@users.noreply.github.com"
 
+# starship
+ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
+
 echo "Done!"
 echo ""
 echo "Add to .zshrc if not already:"
 echo '  export PATH="$HOME/bin:$PATH"'
+echo '  eval "$(starship init zsh)"'
