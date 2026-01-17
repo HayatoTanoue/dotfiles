@@ -39,8 +39,10 @@ ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
 mkdir -p ~/.config
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 
+# add starship to .bashrc
+if ! grep -q 'starship init' ~/.bashrc 2>/dev/null; then
+    echo 'eval "$(starship init bash)"' >> ~/.bashrc
+    echo "Added starship to .bashrc"
+fi
+
 echo "Done!"
-echo ""
-echo "Add to .bashrc or .zshrc:"
-echo '  eval "$(starship init bash)"  # for bash'
-echo '  eval "$(starship init zsh)"   # for zsh'
