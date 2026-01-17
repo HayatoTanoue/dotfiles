@@ -1,6 +1,7 @@
 # Starship config
 
 format = """
+$hostname\
 $directory\
 $git_branch\
 $git_status\
@@ -11,6 +12,11 @@ $golang\
 $cmd_duration\
 $line_break\
 $character"""
+
+[hostname]
+ssh_only = true
+style = "green bold"
+format = "[$hostname]($style):"
 
 [directory]
 style = "blue bold"
