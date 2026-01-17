@@ -43,6 +43,22 @@ if ! command -v starship &> /dev/null; then
     curl -sS https://starship.rs/install.sh | sh -s -- -y
 fi
 
+# install lazygit
+if ! command -v lazygit &> /dev/null; then
+    echo "Installing lazygit..."
+    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "x86_64" ]; then
+        ARCH="x86_64"
+    elif [ "$ARCH" = "aarch64" ]; then
+        ARCH="arm64"
+    fi
+    curl -sLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_${ARCH}.tar.gz"
+    cd /tmp && tar xf lazygit.tar.gz lazygit
+    sudo mv lazygit /usr/local/bin/
+    cd -
+fi
+
 # install cheat
 if ! command -v cheat &> /dev/null; then
     echo "Installing cheat..."
