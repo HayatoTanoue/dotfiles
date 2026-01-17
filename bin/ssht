@@ -1,21 +1,46 @@
 #!/bin/bash
 # SSH + tmux 接続スクリプト
-# 使い方: ssht hostname
+# 使い方: ssht hostname [dev]
+#   ssht myserver       - 3ペイン構成
+#   ssht myserver dev   - dev構成 (yazi + lazygit)
 
 if [ -z "$1" ]; then
-  echo "Usage: ssht <hostname>"
+  echo "Usage: ssht <hostname> [dev]"
+  echo "  ssht myserver       - 3ペイン構成"
+  echo "  ssht myserver dev   - dev構成 (yazi + lazygit)"
   exit 1
 fi
 
 HOST="$1"
+MODE="${2:-basic}"
 
-ssh "$HOST" -t '
-  if tmux has-session -t main 2>/dev/null; then
-    tmux attach -t main
-  else
-    tmux new-session -s main \; \
-      split-window -h \; \
-      split-window -v \; \
-      select-pane -t 0
-  fi
-'
+if [ "$MODE" = "dev" ]; then
+  # dev構成: work(yazi+terminal), git(lazygit), shell(2ペイン)
+  ssh "$HOST" -t '
+    if tmux has-session -t dev 2>/dev/null; then
+      tmux attach -t dev
+    else
+      tmux new-session -s dev -n work \; \
+        send-keys "yazi" C-m \; \
+        split-window -h -l 65% \; \
+        new-window -n git \; \
+        send-keys "lazygit" C-m \; \
+        new-window -n shell \; \
+        split-window -h \; \
+        select-window -t work \; \
+        select-pane -t 1
+    fi
+  '
+else
+  # basic構成: 3ペイン
+  ssh "$HOST" -t '
+    if tmux has-session -t main 2>/dev/null; then
+      tmux attach -t main
+    else
+      tmux new-session -s main \; \
+        split-window -h \; \
+        split-window -v \; \
+        select-pane -t 0
+    fi
+  '
+fi
