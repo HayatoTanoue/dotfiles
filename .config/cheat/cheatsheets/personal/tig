@@ -1,0 +1,44 @@
+---
+tags: [ git ]
+---
+# tig - 軽量 Git TUI
+
+## 起動
+tig                      # コミット履歴表示
+tig blame <file>         # blame表示
+tig <branch>             # 特定ブランチ
+tig --all                # 全ブランチ
+
+## 基本操作
+j/k                      # 上下移動
+Enter                    # 詳細表示
+q                        # 戻る / 終了
+h                        # ヘルプ
+
+## ビュー切り替え
+m                        # main (コミット履歴)
+d                        # diff
+l                        # log
+t                        # tree (ファイル構造)
+f                        # file blame
+b                        # blame
+s                        # status
+c                        # stage (stash)
+y                        # stash
+r                        # refs (ブランチ一覧)
+g                        # grep
+
+## コミット操作 (status view: s)
+u                        # ステージ/アンステージ
+!                        # revert (変更破棄)
+C                        # コミット
+
+## 検索
+/                        # 検索
+n/N                      # 次/前の結果
+
+## 表示オプション
+F                        # 参照表示トグル
+D                        # 日付表示切り替え
+A                        # 作者表示切り替え
+X                        # コミットID表示切り替え

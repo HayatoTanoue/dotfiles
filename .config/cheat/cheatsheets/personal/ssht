@@ -24,10 +24,6 @@ ssht (引数なし) でエイリアス一覧表示
 C-a d                         デタッチ
 ssht myserver dev vgc         再接続 (セッション維持)
 
-## セッション名
-- パス指定なし: main (basic) / dev (dev)
-- パス指定あり: ディレクトリ名 (例: vgc → "VGC")
-
 ## レイアウト: basic
 ┌──────────┬────────┐
 │          │        │
@@ -36,12 +32,18 @@ ssht myserver dev vgc         再接続 (セッション維持)
 └──────────┴────────┘
 
 ## レイアウト: dev
+Window 1 (dev):
 ┌─────────┬─────────────────────┐
 │  yazi   │                     │
 ├─────────┤     terminal        │
-│ lazygit │                     │
+│   tig   │                     │
 └─────────┴─────────────────────┘
+
+Window 2 (git): lazygit
+
+## ウィンドウ切り替え
+C-a 1       dev (yazi + tig + terminal)
+C-a 2       git (lazygit)
 
 ## ペイン移動
 C-a h/j/k/l   vim風にペイン移動
-C-a o         次のペインへ

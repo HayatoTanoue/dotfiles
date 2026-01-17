@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit yazi
+brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit yazi tig
 brew install --cask alacritty
 
 # alacritty

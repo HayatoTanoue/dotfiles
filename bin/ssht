@@ -7,12 +7,15 @@
 #   ssht myserver dev vgc           - dev構成 (エイリアス)
 #
 # dev レイアウト:
+# Window 1 (dev):
 # ┌─────────┬─────────────────────┐
 # │  yazi   │                     │
 # ├─────────┤     terminal        │
-# │ lazygit │                     │
+# │   tig   │                     │
 # └─────────┴─────────────────────┘
 #    35%             65%
+#
+# Window 2 (git): lazygit
 
 CONFIG_FILE="${HOME}/.config/ssht/paths"
 
@@ -34,7 +37,7 @@ if [ -z "$1" ]; then
   echo ""
   echo "Examples:"
   echo "  ssht myserver                - 3ペイン構成"
-  echo "  ssht myserver dev            - dev構成 (yazi + lazygit + terminal)"
+  echo "  ssht myserver dev            - dev構成 (yazi + tig + terminal + lazygit)"
   echo "  ssht myserver dev ~/project  - 指定ディレクトリでdev構成"
   echo "  ssht myserver dev vgc        - エイリアスでdev構成"
   echo ""
@@ -73,7 +76,7 @@ else
 fi
 
 if [ "$MODE" = "dev" ]; then
-  # dev構成: 左(yazi+lazygit) + 右(terminal)
+  # dev構成: Window1(yazi+tig+terminal) + Window2(lazygit)
   ssh "$HOST" -t "
     TARGET_DIR=\"${DIR:-\$HOME}\"
     cd \"\$TARGET_DIR\" 2>/dev/null || TARGET_DIR=\$HOME
@@ -81,11 +84,14 @@ if [ "$MODE" = "dev" ]; then
     if tmux has-session -t ${SESSION_NAME} 2>/dev/null; then
       tmux attach -t ${SESSION_NAME}
     else
-      tmux new-session -s ${SESSION_NAME} -c \"\$TARGET_DIR\" \\; \\
+      tmux new-session -s ${SESSION_NAME} -n dev -c \"\$TARGET_DIR\" \\; \\
         split-window -hb -l 35% -c \"\$TARGET_DIR\" \\; \\
         send-keys \"yazi \\\"\$TARGET_DIR\\\"\" C-m \\; \\
         split-window -v -l 50% -c \"\$TARGET_DIR\" \\; \\
+        send-keys \"tig\" C-m \\; \\
+        new-window -n git -c \"\$TARGET_DIR\" \\; \\
         send-keys \"lazygit\" C-m \\; \\
+        select-window -t dev \\; \\
         select-pane -R
     fi
   "

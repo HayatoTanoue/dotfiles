@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget unzip
+    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget unzip tig
 
     # eza (add repo if not available)
     if ! command -v eza &> /dev/null; then

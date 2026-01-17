@@ -3,12 +3,15 @@
 #         dev [path|alias]
 #
 # レイアウト:
+# Window 1 (dev):
 # ┌─────────┬─────────────────────┐
 # │  yazi   │                     │
 # ├─────────┤     terminal        │
-# │ lazygit │                     │
+# │   tig   │                     │
 # └─────────┴─────────────────────┘
 #    35%             65%
+#
+# Window 2 (git): lazygit
 
 name: dev
 root: <%= @args[0] || "." %>
@@ -21,4 +24,6 @@ windows:
       panes:
         - ""           # 右: メインターミナル (65%)
         - yazi         # 左上: ファイルツリー
-        - lazygit      # 左下: git
+        - tig          # 左下: gitログ
+
+  - git: lazygit
