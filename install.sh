@@ -23,4 +23,9 @@ ln -sf "$DOTFILES/.config/alacritty/cheatsheet.txt" ~/.config/alacritty/cheatshe
 # tmux
 ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
 
+# git config for this repo
+cd "$DOTFILES"
+git config user.name "HayatoTanoue"
+git config user.email "HayatoTanoue@users.noreply.github.com"
+
 echo "Done!"
