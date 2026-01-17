@@ -1,0 +1,12 @@
+# ssht パスエイリアス設定
+# 形式: alias=path
+#
+# 例:
+#   vgc=/home/hayatotanoue/rag-moc/VGC
+#   api=~/projects/api
+#
+# 使い方:
+#   ssht myserver dev vgc
+#   → ssht myserver dev /home/hayatotanoue/rag-moc/VGC
+
+vgc=/home/hayatotanoue/rag-moc/VGC

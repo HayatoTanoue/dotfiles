@@ -5,20 +5,28 @@ ssht <host>                   3ペイン構成 (~)
 ssht <host> dev               dev構成 (~)
 ssht <host> <path>            3ペイン構成 (指定パス)
 ssht <host> dev <path>        dev構成 (指定パス)
+ssht <host> dev <alias>       dev構成 (エイリアス)
 
 ## 例
 ssht myserver                 ホームで接続
 ssht myserver dev             ホームでdev構成
-ssht myserver ~/project       指定ディレクトリで接続
 ssht myserver dev ~/project   指定ディレクトリでdev構成
+ssht myserver dev vgc         エイリアスでdev構成
+
+## エイリアス設定
+~/.config/ssht/paths に記載:
+  vgc=/home/hayatotanoue/rag-moc/VGC
+  api=~/projects/api
+
+ssht (引数なし) でエイリアス一覧表示
 
 ## セッション管理
 C-a d                         デタッチ
-ssht myserver dev ~/project   再接続 (セッション維持)
+ssht myserver dev vgc         再接続 (セッション維持)
 
 ## セッション名
 - パス指定なし: main (basic) / dev (dev)
-- パス指定あり: ディレクトリ名 (例: ~/project → "project")
+- パス指定あり: ディレクトリ名 (例: vgc → "VGC")
 
 ## レイアウト: basic
 ┌──────────┬────────┐
@@ -41,7 +49,3 @@ Window 3 (shell):  ターミナル × 2
 C-a 1       work (yazi + terminal)
 C-a 2       git (lazygit)
 C-a 3       shell
-
-## リモートでの操作
-tmux ls                       セッション一覧
-tmux kill-session -t <name>   セッション削除

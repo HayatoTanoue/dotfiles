@@ -1,17 +1,41 @@
 #!/bin/bash
 # SSH + tmux 接続スクリプト
-# 使い方: ssht hostname [dev] [path]
+# 使い方: ssht hostname [dev] [path|alias]
 #   ssht myserver                   - 3ペイン構成 (~)
 #   ssht myserver dev               - dev構成 (~)
-#   ssht myserver ~/project         - 3ペイン構成 (指定パス)
 #   ssht myserver dev ~/project     - dev構成 (指定パス)
+#   ssht myserver dev vgc           - dev構成 (エイリアス展開)
+
+CONFIG_FILE="${HOME}/.config/ssht/paths"
+
+# エイリアス展開
+expand_alias() {
+  local alias="$1"
+  if [ -f "$CONFIG_FILE" ]; then
+    local expanded=$(grep "^${alias}=" "$CONFIG_FILE" 2>/dev/null | cut -d'=' -f2-)
+    if [ -n "$expanded" ]; then
+      echo "$expanded"
+      return
+    fi
+  fi
+  echo "$alias"
+}
 
 if [ -z "$1" ]; then
-  echo "Usage: ssht <hostname> [dev] [path]"
+  echo "Usage: ssht <hostname> [dev] [path|alias]"
+  echo ""
+  echo "Examples:"
   echo "  ssht myserver                - 3ペイン構成"
   echo "  ssht myserver dev            - dev構成 (yazi + lazygit)"
-  echo "  ssht myserver ~/project      - 指定ディレクトリで3ペイン"
   echo "  ssht myserver dev ~/project  - 指定ディレクトリでdev構成"
+  echo "  ssht myserver dev vgc        - エイリアスでdev構成"
+  echo ""
+  echo "Config: $CONFIG_FILE"
+  if [ -f "$CONFIG_FILE" ]; then
+    echo ""
+    echo "Aliases:"
+    grep -v '^#' "$CONFIG_FILE" | grep -v '^$' | sed 's/^/  /'
+  fi
   exit 1
 fi
 
@@ -25,6 +49,11 @@ if [ "$2" = "dev" ]; then
   DIR="${3:-}"
 elif [ -n "$2" ]; then
   DIR="$2"
+fi
+
+# エイリアス展開
+if [ -n "$DIR" ]; then
+  DIR=$(expand_alias "$DIR")
 fi
 
 # セッション名（ディレクトリ指定時はディレクトリ名を使用）

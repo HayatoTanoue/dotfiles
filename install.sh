@@ -36,6 +36,10 @@ ln -sf "$DOTFILES/.config/tmuxinator/ssh.yml" ~/.config/tmuxinator/ssh.yml
 mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/ssht" ~/bin/ssht
 
+# ssht config
+mkdir -p ~/.config/ssht
+ln -sf "$DOTFILES/.config/ssht/paths" ~/.config/ssht/paths
+
 # git config for this repo
 cd "$DOTFILES"
 git config user.name "HayatoTanoue"
