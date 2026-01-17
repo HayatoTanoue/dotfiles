@@ -1,19 +1,13 @@
 # 開発作業用テンプレート
 # 使い方: tmuxinator start dev [project_path]
-# 例: tmuxinator start dev ~/projects/myapp
 
 name: dev
 root: <%= @args[0] || "." %>
 
 windows:
-  - editor:
+  - main:
+      layout: main-vertical
       panes:
-        - # メインエディタ用
-  - shell:
-      layout: even-horizontal
-      panes:
-        - # 作業用シェル1
-        - # 作業用シェル2
-  - server:
-      panes:
-        - # サーバー/ビルド用
+        - # メイン（左・大）
+        - # サブ（右上）
+        - # サブ（右下）

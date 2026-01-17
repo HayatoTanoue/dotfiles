@@ -26,6 +26,7 @@ ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
 # tmuxinator
 mkdir -p ~/.config/tmuxinator
 ln -sf "$DOTFILES/.config/tmuxinator/dev.yml" ~/.config/tmuxinator/dev.yml
+ln -sf "$DOTFILES/.config/tmuxinator/ssh.yml" ~/.config/tmuxinator/ssh.yml
 
 # git config for this repo
 cd "$DOTFILES"
