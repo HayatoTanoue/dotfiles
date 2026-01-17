@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget
+    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget unzip
 
     # eza (add repo if not available)
     if ! command -v eza &> /dev/null; then
@@ -56,6 +56,23 @@ if ! command -v lazygit &> /dev/null; then
     curl -sLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_${ARCH}.tar.gz"
     cd /tmp && tar xf lazygit.tar.gz lazygit
     sudo mv lazygit /usr/local/bin/
+    cd -
+fi
+
+# install yazi
+if ! command -v yazi &> /dev/null; then
+    echo "Installing yazi..."
+    YAZI_VERSION=$(curl -s "https://api.github.com/repos/sxyazi/yazi/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "x86_64" ]; then
+        ARCH="x86_64"
+    elif [ "$ARCH" = "aarch64" ]; then
+        ARCH="aarch64"
+    fi
+    curl -sLo /tmp/yazi.zip "https://github.com/sxyazi/yazi/releases/latest/download/yazi-${ARCH}-unknown-linux-gnu.zip"
+    cd /tmp && unzip -o yazi.zip
+    sudo mv yazi-${ARCH}-unknown-linux-gnu/yazi /usr/local/bin/
+    rm -rf yazi-${ARCH}-unknown-linux-gnu yazi.zip
     cd -
 fi
 
