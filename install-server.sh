@@ -63,7 +63,7 @@ mkdir -p ~/.config
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 
 # cheat config
-mkdir -p ~/.config/cheat/cheatsheets
+mkdir -p ~/.config/cheat/cheatsheets/community
 ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
 ln -sf "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
 
