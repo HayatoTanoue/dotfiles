@@ -6,11 +6,17 @@ set -e
 
 DOTFILES="$HOME/dotfiles"
 
-# clone if not exists
+# clone or update dotfiles
 if [ ! -d "$DOTFILES" ]; then
     echo "Cloning dotfiles..."
     git clone https://github.com/HayatoTanoue/dotfiles.git "$DOTFILES"
+else
+    echo "Updating dotfiles..."
+    cd "$DOTFILES" && git pull
 fi
+
+# cleanup broken symlinks in dotfiles
+find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 
 # install packages (Ubuntu/Debian)
 if command -v apt-get &> /dev/null; then
