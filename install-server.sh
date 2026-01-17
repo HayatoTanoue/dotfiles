@@ -32,12 +32,35 @@ if ! command -v starship &> /dev/null; then
     curl -sS https://starship.rs/install.sh | sh -s -- -y
 fi
 
+# install cheat
+if ! command -v cheat &> /dev/null; then
+    echo "Installing cheat..."
+    cd /tmp
+    CHEAT_VERSION="4.4.2"
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "x86_64" ]; then
+        ARCH="amd64"
+    elif [ "$ARCH" = "aarch64" ]; then
+        ARCH="arm64"
+    fi
+    curl -sLO "https://github.com/cheat/cheat/releases/download/${CHEAT_VERSION}/cheat-linux-${ARCH}.gz"
+    gunzip "cheat-linux-${ARCH}.gz"
+    chmod +x "cheat-linux-${ARCH}"
+    sudo mv "cheat-linux-${ARCH}" /usr/local/bin/cheat
+    cd -
+fi
+
 # tmux config
 ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
 
 # starship config
 mkdir -p ~/.config
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
+
+# cheat config
+mkdir -p ~/.config/cheat/cheatsheets
+ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
+ln -sf "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
 
 # add starship to .bashrc
 if ! grep -q 'starship init' ~/.bashrc 2>/dev/null; then
