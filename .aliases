@@ -1,5 +1,10 @@
 # Modern CLI aliases
 
+# fzf-tab
+if [ -f ~/.zsh/fzf-tab/fzf-tab.plugin.zsh ]; then
+    source ~/.zsh/fzf-tab/fzf-tab.plugin.zsh
+fi
+
 # eza (ls replacement)
 if command -v eza &> /dev/null; then
     alias ls='eza'

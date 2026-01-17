@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget unzip tig
+    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget unzip tig fzf
 
     # eza (add repo if not available)
     if ! command -v eza &> /dev/null; then
@@ -103,6 +103,13 @@ mkdir -p ~/.config/cheat/cheatsheets/community
 ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
 rm -rf ~/.config/cheat/cheatsheets/personal
 ln -s "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
+
+# fzf-tab
+if [ ! -d "$HOME/.zsh/fzf-tab" ]; then
+    echo "Installing fzf-tab..."
+    mkdir -p ~/.zsh
+    git clone https://github.com/Aloxaf/fzf-tab ~/.zsh/fzf-tab
+fi
 
 # bin scripts
 mkdir -p ~/bin

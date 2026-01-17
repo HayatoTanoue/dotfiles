@@ -12,13 +12,20 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust
+brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf
 
 # filetree (cargo)
 if ! command -v ft &> /dev/null; then
     echo "Installing filetree..."
     cargo install filetree
 fi
+# fzf-tab
+if [ ! -d "$HOME/.zsh/fzf-tab" ]; then
+    echo "Installing fzf-tab..."
+    mkdir -p ~/.zsh
+    git clone https://github.com/Aloxaf/fzf-tab ~/.zsh/fzf-tab
+fi
+
 brew install --cask alacritty
 
 # alacritty
