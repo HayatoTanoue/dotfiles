@@ -28,9 +28,16 @@ mkdir -p ~/.config/tmuxinator
 ln -sf "$DOTFILES/.config/tmuxinator/dev.yml" ~/.config/tmuxinator/dev.yml
 ln -sf "$DOTFILES/.config/tmuxinator/ssh.yml" ~/.config/tmuxinator/ssh.yml
 
+# bin scripts
+mkdir -p ~/bin
+ln -sf "$DOTFILES/bin/ssht" ~/bin/ssht
+
 # git config for this repo
 cd "$DOTFILES"
 git config user.name "HayatoTanoue"
 git config user.email "HayatoTanoue@users.noreply.github.com"
 
 echo "Done!"
+echo ""
+echo "Add to .zshrc if not already:"
+echo '  export PATH="$HOME/bin:$PATH"'

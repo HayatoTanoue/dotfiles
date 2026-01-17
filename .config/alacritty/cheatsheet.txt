@@ -6,16 +6,6 @@ Alacritty + tmux チートシート
   Cmd+Enter      フルスクリーン
   Cmd+K          画面クリア
 
-【tmux操作 (Alacrittyから)】
-  Cmd+T          新しいタブ(ウィンドウ)
-  Cmd+W          ペインを閉じる
-  Cmd+D          縦分割 |
-  Cmd+Shift+D    横分割 -
-  Cmd+1~9        タブ切り替え
-  Cmd+[          左のペインへ
-  Cmd+]          右のペインへ
-  Cmd+Shift+S    セッション一覧
-
 【tmux操作 (Prefix: Ctrl+a)】
   C-a c          新しいウィンドウ
   C-a |          縦分割
@@ -24,6 +14,7 @@ Alacritty + tmux チートシート
   C-a h/j/k/l    ペイン移動
   C-a H/J/K/L    ペインリサイズ
   C-a s          セッション一覧
+  C-a d          デタッチ（セッション維持）
   C-a r          設定リロード
   Shift+←/→      ウィンドウ切り替え
 
@@ -33,22 +24,16 @@ Alacritty + tmux チートシート
   y / Enter      コピー
   q              終了
 
-【tmuxinator】
-  tmuxinator start dev [path]    ローカル開発セッション
-  tmuxinator start ssh [host]    SSHリモートセッション
-  tmuxinator list                テンプレート一覧
-  tmuxinator edit [name]         設定編集
+【SSH接続】
+  ssht [host]    SSH先のtmuxに接続（3ペイン分割）
+                 ※ ~/.ssh/config のホスト名が使える
 
-【SSH + tmux セッション管理】
-  C-a d          セッションから抜ける(デタッチ)
-                 ※ セッションはリモートで動き続ける
+  例:
+    ssht myserver        接続（初回は3ペイン作成）
+    C-a d                デタッチ（ローカルに戻る）
+    ssht myserver        再接続（既存セッション維持）
 
-  再接続方法:
-    tmuxinator start ssh [host]  同じコマンドで再接続
-    または
-    ssh [host] -t 'tmux attach'  直接アタッチ
-
-  セッション確認(リモートで):
-    tmux ls                      セッション一覧
-    tmux attach -t main          mainセッションに接続
-    tmux kill-session -t main    セッション終了
+【セッション管理（リモートで）】
+  tmux ls                セッション一覧
+  tmux attach -t main    mainに接続
+  tmux kill-session -t main  セッション終了

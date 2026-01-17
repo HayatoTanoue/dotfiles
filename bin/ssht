@@ -1,0 +1,21 @@
+#!/bin/bash
+# SSH + tmux 接続スクリプト
+# 使い方: ssht hostname
+
+if [ -z "$1" ]; then
+  echo "Usage: ssht <hostname>"
+  exit 1
+fi
+
+HOST="$1"
+
+ssh "$HOST" -t '
+  if tmux has-session -t main 2>/dev/null; then
+    tmux attach -t main
+  else
+    tmux new-session -s main \; \
+      split-window -h \; \
+      split-window -v \; \
+      select-pane -t 0
+  fi
+'
