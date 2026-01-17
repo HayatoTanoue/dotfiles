@@ -26,7 +26,21 @@ if ! command -v tmux &> /dev/null; then
     fi
 fi
 
+# install starship
+if ! command -v starship &> /dev/null; then
+    echo "Installing starship..."
+    curl -sS https://starship.rs/install.sh | sh -s -- -y
+fi
+
 # tmux config
 ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
 
+# starship config
+mkdir -p ~/.config
+ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
+
 echo "Done!"
+echo ""
+echo "Add to .bashrc or .zshrc:"
+echo '  eval "$(starship init bash)"  # for bash'
+echo '  eval "$(starship init zsh)"   # for zsh'
