@@ -1,5 +1,5 @@
 #!/bin/bash
-# dotfiles installer for servers (Linux)
+# dotfiles installer for servers (Linux/Ubuntu)
 # Usage: curl -sL https://raw.githubusercontent.com/HayatoTanoue/dotfiles/main/install-server.sh | bash
 
 set -e
@@ -12,18 +12,11 @@ if [ ! -d "$DOTFILES" ]; then
     git clone https://github.com/HayatoTanoue/dotfiles.git "$DOTFILES"
 fi
 
-# install tmux if not exists
-if ! command -v tmux &> /dev/null; then
-    echo "Installing tmux..."
-    if command -v apt-get &> /dev/null; then
-        sudo apt-get update && sudo apt-get install -y tmux
-    elif command -v yum &> /dev/null; then
-        sudo yum install -y tmux
-    elif command -v dnf &> /dev/null; then
-        sudo dnf install -y tmux
-    else
-        echo "Package manager not found. Install tmux manually."
-    fi
+# install packages (Ubuntu/Debian)
+if command -v apt-get &> /dev/null; then
+    echo "Installing packages..."
+    sudo apt-get update
+    sudo apt-get install -y tmux zsh zsh-autosuggestions
 fi
 
 # install starship
@@ -62,10 +55,23 @@ mkdir -p ~/.config/cheat/cheatsheets
 ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
 ln -sf "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
 
-# add starship to .bashrc
-if ! grep -q 'starship init' ~/.bashrc 2>/dev/null; then
-    echo 'eval "$(starship init bash)"' >> ~/.bashrc
-    echo "Added starship to .bashrc"
+# setup .zshrc
+if [ ! -f ~/.zshrc ] || ! grep -q 'starship init' ~/.zshrc 2>/dev/null; then
+    cat >> ~/.zshrc << 'EOF'
+
+# dotfiles config
+eval "$(starship init zsh)"
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+EOF
+    echo "Added config to .zshrc"
+fi
+
+# change default shell to zsh
+if [ "$SHELL" != "$(which zsh)" ]; then
+    echo "Changing default shell to zsh..."
+    chsh -s $(which zsh)
 fi
 
 echo "Done!"
+echo ""
+echo "Restart your shell or run: exec zsh"
