@@ -1,0 +1,31 @@
+# tmux チートシート (Prefix: Ctrl+a)
+
+## ペイン操作
+C-a |           縦分割
+C-a -           横分割
+C-a x           ペインを閉じる
+C-a h/j/k/l     ペイン移動 (←↓↑→)
+C-a H/J/K/L     ペインリサイズ
+
+## ウィンドウ操作
+C-a c           新しいウィンドウ
+C-a n / p       次/前のウィンドウ
+Shift+←/→       ウィンドウ切り替え
+C-a 1-9         ウィンドウ番号で移動
+
+## セッション
+C-a d           デタッチ (セッション維持)
+C-a s           セッション一覧
+C-a r           設定リロード
+
+## コピーモード
+C-a [           コピーモード開始
+v               選択開始
+y / Enter       コピー
+q               終了
+
+## コマンドライン
+tmux ls                     セッション一覧
+tmux attach -t <name>       セッションにアタッチ
+tmux kill-session -t <name> セッション終了
+tmux new -s <name>          新規セッション

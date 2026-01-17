@@ -13,19 +13,13 @@ cd ~/dotfiles && ./install.sh
 
 インストールされるもの:
 - Homebrew（未インストールの場合）
-- tmux, tmuxinator
+- tmux, tmuxinator, cheat
 - Alacritty
 
 ### サーバー (Linux)
 
 ```bash
 curl -sL https://raw.githubusercontent.com/HayatoTanoue/dotfiles/main/install-server.sh | bash
-```
-
-または:
-```bash
-git clone https://github.com/HayatoTanoue/dotfiles.git ~/dotfiles
-~/dotfiles/install-server.sh
 ```
 
 ## 使い方
@@ -36,21 +30,13 @@ git clone https://github.com/HayatoTanoue/dotfiles.git ~/dotfiles
 ssht myserver    # SSH先のtmuxに3ペイン分割で接続
 ```
 
-- 初回: 3ペイン分割でセッション作成
-- 再接続: 既存セッションにアタッチ
+### チートシート
 
-### tmux操作
-
-| キー | 操作 |
-|------|------|
-| `C-a \|` | 縦分割 |
-| `C-a -` | 横分割 |
-| `C-a h/j/k/l` | ペイン移動 |
-| `C-a d` | デタッチ |
-| `C-a c` | 新しいウィンドウ |
-| `Shift+←/→` | ウィンドウ切り替え |
-
-詳細: `cat ~/.config/alacritty/cheatsheet.txt`
+```bash
+cheat tmux       # tmux操作
+cheat ssht       # SSH接続
+cheat alacritty  # Alacritty操作
+```
 
 ## 構成
 
@@ -58,8 +44,13 @@ ssht myserver    # SSH先のtmuxに3ペイン分割で接続
 ~/dotfiles/
 ├── .config/
 │   ├── alacritty/
-│   │   ├── alacritty.toml
-│   │   └── cheatsheet.txt
+│   │   └── alacritty.toml
+│   ├── cheat/
+│   │   ├── conf.yml
+│   │   └── cheatsheets/personal/
+│   │       ├── tmux
+│   │       ├── ssht
+│   │       └── alacritty
 │   └── tmuxinator/
 │       ├── dev.yml
 │       └── ssh.yml

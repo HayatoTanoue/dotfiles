@@ -1,0 +1,13 @@
+# Alacritty チートシート
+
+## 基本操作
+Cmd+N           新しいウィンドウ
+Cmd+Enter       フルスクリーン
+Cmd+K           画面クリア
+Cmd+Q           終了
+
+## 設定
+~/.config/alacritty/alacritty.toml
+
+## 設定リロード
+live_config_reload = true のため自動反映

@@ -12,13 +12,17 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator
+brew install tmux tmuxinator cheat
 brew install --cask alacritty
 
 # alacritty
 mkdir -p ~/.config/alacritty
 ln -sf "$DOTFILES/.config/alacritty/alacritty.toml" ~/.config/alacritty/alacritty.toml
-ln -sf "$DOTFILES/.config/alacritty/cheatsheet.txt" ~/.config/alacritty/cheatsheet.txt
+
+# cheat
+mkdir -p ~/.config/cheat/cheatsheets
+ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
+ln -sf "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
 
 # tmux
 ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
