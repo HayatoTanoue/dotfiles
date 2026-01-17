@@ -1,0 +1,166 @@
+# Alacritty 基本設定
+
+[general]
+live_config_reload = true
+
+[terminal]
+shell = { program = "/bin/zsh", args = ["-l", "-c", "tmux new-session -A -s main"] }
+
+[window]
+dimensions = { columns = 120, lines = 40 }
+padding = { x = 10, y = 10 }
+opacity = 0.92
+decorations = "Buttonless"
+option_as_alt = "Both"
+
+[cursor]
+style = { shape = "Beam", blinking = "On" }
+blink_interval = 500
+unfocused_hollow = true
+
+[scrolling]
+history = 100000
+multiplier = 3
+
+[font]
+normal = { family = "Menlo", style = "Regular" }
+bold = { family = "Menlo", style = "Bold" }
+italic = { family = "Menlo", style = "Italic" }
+bold_italic = { family = "Menlo", style = "Bold Italic" }
+size = 14.0
+offset = { x = 0, y = 2 }
+
+[selection]
+save_to_clipboard = true
+
+[mouse]
+hide_when_typing = true
+
+# Tokyo Night テーマ
+[colors.primary]
+background = "#1a1b26"
+foreground = "#c0caf5"
+
+[colors.normal]
+black   = "#15161e"
+red     = "#f7768e"
+green   = "#9ece6a"
+yellow  = "#e0af68"
+blue    = "#7aa2f7"
+magenta = "#bb9af7"
+cyan    = "#7dcfff"
+white   = "#a9b1d6"
+
+[colors.bright]
+black   = "#414868"
+red     = "#f7768e"
+green   = "#9ece6a"
+yellow  = "#e0af68"
+blue    = "#7aa2f7"
+magenta = "#bb9af7"
+cyan    = "#7dcfff"
+white   = "#c0caf5"
+
+# === 基本操作 ===
+[[keyboard.bindings]]
+key = "N"
+mods = "Command"
+action = "SpawnNewInstance"
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Command"
+action = "ToggleFullscreen"
+
+[[keyboard.bindings]]
+key = "K"
+mods = "Command"
+action = "ClearHistory"
+
+# === tmux操作 (Cmd -> Ctrl+a) ===
+# Cmd+T: 新しいtmuxウィンドウ
+[[keyboard.bindings]]
+key = "T"
+mods = "Command"
+chars = "\u0001c"
+
+# Cmd+W: 現在のペインを閉じる
+[[keyboard.bindings]]
+key = "W"
+mods = "Command"
+chars = "\u0001x"
+
+# Cmd+D: 縦分割
+[[keyboard.bindings]]
+key = "D"
+mods = "Command"
+chars = "\u0001|"
+
+# Cmd+Shift+D: 横分割
+[[keyboard.bindings]]
+key = "D"
+mods = "Command|Shift"
+chars = "\u0001-"
+
+# Cmd+1-9: tmuxウィンドウ切り替え
+[[keyboard.bindings]]
+key = "Key1"
+mods = "Command"
+chars = "\u00011"
+
+[[keyboard.bindings]]
+key = "Key2"
+mods = "Command"
+chars = "\u00012"
+
+[[keyboard.bindings]]
+key = "Key3"
+mods = "Command"
+chars = "\u00013"
+
+[[keyboard.bindings]]
+key = "Key4"
+mods = "Command"
+chars = "\u00014"
+
+[[keyboard.bindings]]
+key = "Key5"
+mods = "Command"
+chars = "\u00015"
+
+[[keyboard.bindings]]
+key = "Key6"
+mods = "Command"
+chars = "\u00016"
+
+[[keyboard.bindings]]
+key = "Key7"
+mods = "Command"
+chars = "\u00017"
+
+[[keyboard.bindings]]
+key = "Key8"
+mods = "Command"
+chars = "\u00018"
+
+[[keyboard.bindings]]
+key = "Key9"
+mods = "Command"
+chars = "\u00019"
+
+# Cmd+[/]: ペイン移動
+[[keyboard.bindings]]
+key = "LBracket"
+mods = "Command"
+chars = "\u0001h"
+
+[[keyboard.bindings]]
+key = "RBracket"
+mods = "Command"
+chars = "\u0001l"
+
+# Cmd+S: セッション一覧
+[[keyboard.bindings]]
+key = "S"
+mods = "Command|Shift"
+chars = "\u0001s"

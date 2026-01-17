@@ -1,0 +1,34 @@
+Alacritty + tmux チートシート
+================================
+
+【Alacritty】
+  Cmd+N          新しいウィンドウ
+  Cmd+Enter      フルスクリーン
+  Cmd+K          画面クリア
+
+【tmux操作 (Alacrittyから)】
+  Cmd+T          新しいタブ(ウィンドウ)
+  Cmd+W          ペインを閉じる
+  Cmd+D          縦分割 |
+  Cmd+Shift+D    横分割 -
+  Cmd+1~9        タブ切り替え
+  Cmd+[          左のペインへ
+  Cmd+]          右のペインへ
+  Cmd+Shift+S    セッション一覧
+
+【tmux操作 (Prefix: Ctrl+a)】
+  C-a c          新しいウィンドウ
+  C-a |          縦分割
+  C-a -          横分割
+  C-a x          ペインを閉じる
+  C-a h/j/k/l    ペイン移動
+  C-a H/J/K/L    ペインリサイズ
+  C-a s          セッション一覧
+  C-a r          設定リロード
+  Shift+←/→      ウィンドウ切り替え
+
+【コピーモード】
+  C-a [          コピーモード開始
+  v              選択開始
+  y / Enter      コピー
+  q              終了
