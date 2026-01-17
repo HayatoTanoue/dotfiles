@@ -11,7 +11,7 @@
 # ┌──────────────┬─────────────────────┐
 # │  filetree    │                     │
 # ├──────────────┤     terminal        │
-# │ git-summary  │                     │
+# │     tig      │                     │
 # └──────────────┴─────────────────────┘
 #      35%                65%
 #
@@ -88,7 +88,7 @@ if [ "$MODE" = "dev" ]; then
         split-window -hb -l 35% -c \"\$TARGET_DIR\" \\; \\
         send-keys \"ft \\\"\$TARGET_DIR\\\"\" C-m \\; \\
         split-window -v -l 50% -c \"\$TARGET_DIR\" \\; \\
-        send-keys \"watch -c -n 2 git-summary\" C-m \\; \\
+        send-keys \"tig\" C-m \\; \\
         new-window -n git -c \"\$TARGET_DIR\" \\; \\
         send-keys \"lazygit\" C-m \\; \\
         select-window -t dev \\; \\
