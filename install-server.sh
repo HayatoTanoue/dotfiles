@@ -40,7 +40,8 @@ fi
 # install starship
 if ! command -v starship &> /dev/null; then
     echo "Installing starship..."
-    curl -sS https://starship.rs/install.sh | sh -s -- -y
+    mkdir -p ~/.local/bin
+    curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin
 fi
 
 # install lazygit
@@ -55,7 +56,8 @@ if ! command -v lazygit &> /dev/null; then
     fi
     curl -sLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_${ARCH}.tar.gz"
     cd /tmp && tar xf lazygit.tar.gz lazygit
-    sudo mv lazygit /usr/local/bin/
+    mkdir -p ~/.local/bin
+    mv lazygit ~/.local/bin/
     cd -
 fi
 
@@ -87,7 +89,8 @@ if ! command -v cheat &> /dev/null; then
     curl -sLO "https://github.com/cheat/cheat/releases/download/${CHEAT_VERSION}/cheat-linux-${ARCH}.gz"
     gunzip "cheat-linux-${ARCH}.gz"
     chmod +x "cheat-linux-${ARCH}"
-    sudo mv "cheat-linux-${ARCH}" /usr/local/bin/cheat
+    mkdir -p ~/.local/bin
+    mv "cheat-linux-${ARCH}" ~/.local/bin/cheat
     cd -
 fi
 
@@ -99,7 +102,7 @@ mkdir -p ~/.config
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 
 # cheat config
-mkdir -p ~/.config/cheat/cheatsheets/community
+mkdir -p ~/.config/cheat/cheatsheets
 ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
 rm -rf ~/.config/cheat/cheatsheets/personal
 ln -s "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
@@ -116,8 +119,8 @@ mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 
 # setup .zshrc
-if ! grep -q 'PATH.*bin' ~/.zshrc 2>/dev/null; then
-    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
+if ! grep -q 'PATH.*local/bin' ~/.zshrc 2>/dev/null; then
+    echo 'export PATH="$HOME/.local/bin:$HOME/bin:$PATH"' >> ~/.zshrc
 fi
 if ! grep -q 'cargo/env' ~/.zshrc 2>/dev/null; then
     echo 'source "$HOME/.cargo/env" 2>/dev/null || true' >> ~/.zshrc
