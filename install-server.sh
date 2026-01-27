@@ -81,6 +81,12 @@ if ! command -v lazygit &> /dev/null; then
     cd -
 fi
 
+# install Claude Code
+if ! command -v claude &> /dev/null; then
+    echo "Installing Claude Code..."
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
+
 # install rust (for filetree)
 if ! command -v cargo &> /dev/null; then
     echo "Installing Rust..."
@@ -93,6 +99,13 @@ if ! command -v ft &> /dev/null; then
     echo "Installing filetree..."
     source "$HOME/.cargo/env" 2>/dev/null || true
     cargo install filetree
+fi
+
+# install yazi
+if ! command -v yazi &> /dev/null; then
+    echo "Installing yazi..."
+    source "$HOME/.cargo/env" 2>/dev/null || true
+    cargo install yazi-fm yazi-cli
 fi
 
 # install cheat
@@ -120,6 +133,10 @@ ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
 # starship config
 mkdir -p ~/.config
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
+
+# yazi config
+ln -sfn "$DOTFILES/.config/yazi" ~/.config/yazi
+ya pkg add BennyOe/tokyo-night 2>/dev/null || true
 
 # cheat config
 mkdir -p ~/.config/cheat/cheatsheets
