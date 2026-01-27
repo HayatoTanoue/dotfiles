@@ -22,7 +22,11 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget unzip tig fzf
+    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget unzip tig fzf locales
+
+    # setup UTF-8 locale
+    sudo locale-gen en_US.UTF-8
+    sudo update-locale LANG=en_US.UTF-8
 
     # eza (add repo if not available)
     if ! command -v eza &> /dev/null; then
@@ -119,6 +123,9 @@ mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 
 # setup .zshrc
+if ! grep -q 'LANG=' ~/.zshrc 2>/dev/null; then
+    echo 'export LANG=en_US.UTF-8' >> ~/.zshrc
+fi
 if ! grep -q 'PATH.*local/bin' ~/.zshrc 2>/dev/null; then
     echo 'export PATH="$HOME/.local/bin:$HOME/bin:$PATH"' >> ~/.zshrc
 fi
