@@ -4,6 +4,7 @@
 C-a |           縦分割
 C-a -           横分割
 C-a x           ペインを閉じる
+Cmd+←/↓/↑/→    ペイン移動 (Alacritty)
 Alt+←/↓/↑/→    ペイン移動 (prefix不要)
 C-a h/j/k/l     ペイン移動 (←↓↑→)
 C-a H/J/K/L     ペインリサイズ
