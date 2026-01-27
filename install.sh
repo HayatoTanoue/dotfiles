@@ -26,7 +26,7 @@ if [ ! -d "$HOME/.zsh/fzf-tab" ]; then
     git clone https://github.com/Aloxaf/fzf-tab ~/.zsh/fzf-tab
 fi
 
-brew install --cask alacritty
+brew install --cask alacritty 2>/dev/null || true
 
 # alacritty
 mkdir -p ~/.config/alacritty
