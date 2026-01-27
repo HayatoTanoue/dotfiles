@@ -63,10 +63,7 @@ git config user.email "HayatoTanoue@users.noreply.github.com"
 # starship
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 
-echo "Done!"
-echo ""
-echo "Add to .zshrc if not already:"
-echo '  export PATH="$HOME/bin:$PATH"'
-echo '  eval "$(starship init zsh)"'
-echo '  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh'
-echo '  source ~/dotfiles/.aliases'
+# zshrc
+ln -sf "$DOTFILES/.zshrc" ~/.zshrc
+
+echo "Done! Restart your shell or run: source ~/.zshrc"

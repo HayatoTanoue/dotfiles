@@ -1,0 +1,33 @@
+# ============================================
+# Path & Environment
+# ============================================
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+
+# cargo
+source "$HOME/.cargo/env" 2>/dev/null || true
+
+# ============================================
+# Completion
+# ============================================
+autoload -Uz compinit
+compinit
+
+# ============================================
+# Plugins
+# ============================================
+# zsh-autosuggestions
+if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+# aliases (includes fzf-tab, must be after compinit)
+source ~/dotfiles/.aliases
+
+# ============================================
+# Prompt
+# ============================================
+eval "$(starship init zsh)"

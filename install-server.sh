@@ -139,25 +139,8 @@ mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
 
-# setup .zshrc
-if ! grep -q 'LANG=' ~/.zshrc 2>/dev/null; then
-    echo 'export LANG=en_US.UTF-8' >> ~/.zshrc
-fi
-if ! grep -q 'PATH.*local/bin' ~/.zshrc 2>/dev/null; then
-    echo 'export PATH="$HOME/.local/bin:$HOME/bin:$PATH"' >> ~/.zshrc
-fi
-if ! grep -q 'cargo/env' ~/.zshrc 2>/dev/null; then
-    echo 'source "$HOME/.cargo/env" 2>/dev/null || true' >> ~/.zshrc
-fi
-if ! grep -q 'starship init' ~/.zshrc 2>/dev/null; then
-    echo 'eval "$(starship init zsh)"' >> ~/.zshrc
-fi
-if ! grep -q 'zsh-autosuggestions' ~/.zshrc 2>/dev/null; then
-    echo 'source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh' >> ~/.zshrc
-fi
-if ! grep -q 'dotfiles/.aliases' ~/.zshrc 2>/dev/null; then
-    echo 'source ~/dotfiles/.aliases' >> ~/.zshrc
-fi
+# zshrc
+ln -sf "$DOTFILES/.zshrc.server" ~/.zshrc
 
 # change default shell to zsh
 if [ "$SHELL" != "$(which zsh)" ]; then
