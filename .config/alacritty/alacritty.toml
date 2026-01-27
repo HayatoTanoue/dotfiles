@@ -11,7 +11,7 @@ osc52 = "CopyPaste"
 dimensions = { columns = 120, lines = 40 }
 padding = { x = 10, y = 10 }
 opacity = 0.92
-decorations = "Buttonless"
+decorations = "Full"
 option_as_alt = "Both"
 
 [cursor]

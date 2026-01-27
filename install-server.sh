@@ -121,6 +121,7 @@ fi
 # bin scripts
 mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
+ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
 
 # setup .zshrc
 if ! grep -q 'LANG=' ~/.zshrc 2>/dev/null; then
