@@ -26,9 +26,22 @@ if [ ! -d "$HOME/.zsh/fzf-tab" ]; then
     git clone https://github.com/Aloxaf/fzf-tab ~/.zsh/fzf-tab
 fi
 
-brew install --cask alacritty 2>/dev/null || true
+# alacritty (build from source — Homebrew cask deprecated)
+if [ ! -d "$HOME/.local/src/alacritty" ]; then
+    echo "Cloning alacritty..."
+    mkdir -p ~/.local/src
+    git clone https://github.com/alacritty/alacritty.git ~/.local/src/alacritty
+fi
+cd ~/.local/src/alacritty
+git pull
+echo "Building alacritty..."
+make app
+if [ -d /Applications/Alacritty.app ]; then
+    rm -rf /Applications/Alacritty.app
+fi
+cp -r target/release/osx/Alacritty.app /Applications/
+cd "$DOTFILES"
 
-# alacritty
 mkdir -p ~/.config/alacritty
 ln -sf "$DOTFILES/.config/alacritty/alacritty.toml" ~/.config/alacritty/alacritty.toml
 
