@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf
+brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi
 
 # filetree (cargo)
 if ! command -v ft &> /dev/null; then
@@ -72,6 +72,10 @@ ln -sf "$DOTFILES/.config/ssht/paths" ~/.config/ssht/paths
 cd "$DOTFILES"
 git config user.name "HayatoTanoue"
 git config user.email "HayatoTanoue@users.noreply.github.com"
+
+# yazi
+ln -sfn "$DOTFILES/.config/yazi" ~/.config/yazi
+ya pkg add BennyOe/tokyo-night 2>/dev/null || true
 
 # starship
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml

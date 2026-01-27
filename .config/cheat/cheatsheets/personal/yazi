@@ -1,0 +1,40 @@
+---
+syntax: bash
+tags: [ file-manager ]
+---
+
+# Launch yazi (with cd-on-exit wrapper)
+y
+
+# Navigation
+# j/k        Move down/up
+# h/l        Parent dir / Enter dir
+# gg/G       Top / Bottom
+# /          Search
+
+# File operations
+# o          Open file
+# a          Create file
+# r          Rename
+# d          Trash
+# D          Permanently delete
+# y          Yank (copy)
+# x          Cut
+# p          Paste
+# .          Toggle hidden files
+
+# Selection
+# Space      Select current
+# v          Visual mode (select range)
+# V          Inverse selection
+
+# Tabs
+# t          New tab
+# 1-9        Switch to tab N
+# Ctrl+c     Close tab
+
+# Other
+# q          Quit
+# ~          Help
+# z          Jump (fzf)
+# Z          Jump (zoxide)
