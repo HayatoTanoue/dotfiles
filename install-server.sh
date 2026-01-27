@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y tmux zsh zsh-autosuggestions bat gpg wget unzip tig fzf locales
+    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf locales
 
     # setup UTF-8 locale
     sudo locale-gen en_US.UTF-8
@@ -39,6 +39,22 @@ if command -v apt-get &> /dev/null; then
             sudo apt-get install -y eza
         fi
     fi
+fi
+
+# install tmux (build from source for 3.3+ features)
+TMUX_REQUIRED="3.3"
+TMUX_CURRENT=$(tmux -V 2>/dev/null | awk '{print $2}' | tr -d 'a-z')
+if [ -z "$TMUX_CURRENT" ] || awk "BEGIN{exit (!($TMUX_CURRENT < $TMUX_REQUIRED))}"; then
+    echo "Installing tmux >= $TMUX_REQUIRED from source..."
+    sudo apt-get install -y libevent-dev ncurses-dev build-essential bison pkg-config
+    TMUX_VERSION="3.5a"
+    cd /tmp
+    curl -sLO "https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz"
+    tar xf "tmux-${TMUX_VERSION}.tar.gz"
+    cd "tmux-${TMUX_VERSION}"
+    ./configure && make -j"$(nproc)"
+    sudo make install
+    cd /tmp && rm -rf "tmux-${TMUX_VERSION}" "tmux-${TMUX_VERSION}.tar.gz"
 fi
 
 # install starship
