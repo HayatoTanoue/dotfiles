@@ -13,6 +13,7 @@ fi
 
 echo "Installing packages..."
 brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi
+brew install --cask font-hack-nerd-font
 
 # filetree (cargo)
 if ! command -v ft &> /dev/null; then
