@@ -59,11 +59,6 @@ eval "$(starship init zsh)"
 # Aliases
 # ============================================
 
-# tmux
-alias ta='tmux attach -t'
-alias tl='tmux list-sessions'
-alias tk='tmux kill-session -t'
-
 # GPU Server Shortcuts
 alias h100-1='ssh-tmux H100_1'
 alias h100-2='ssh-tmux H100_2'

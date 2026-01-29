@@ -23,6 +23,15 @@ function y() {
     rm -f -- "$tmp"
 }
 
+# tmux
+alias ta='tmux attach -t'
+alias td='tmux detach'
+alias tl='tmux list-sessions'
+alias tk='tmux kill-session -t'
+alias tka='tmux kill-server'
+alias tn='tmux new-session -s'
+alias mc='multi-claude'
+
 # claude
 alias claude-dg='claude --dangerously-skip-permissions'
 
