@@ -89,7 +89,7 @@ git config user.email "HayatoTanoue@users.noreply.github.com"
 # yazi
 ln -sfn "$DOTFILES/.config/yazi" ~/.config/yazi
 ya pkg add BennyOe/tokyo-night 2>/dev/null || true
-ya pkg add Reledia/glow 2>/dev/null || true
+ya pkg add yazi-rs/plugins:piper 2>/dev/null || true
 
 # starship
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
