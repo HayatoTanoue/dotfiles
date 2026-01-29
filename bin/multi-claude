@@ -30,7 +30,6 @@ ssh "$HOST" -t "
   if tmux has-session -t ${SESSION} 2>/dev/null; then
     tmux attach -t ${SESSION}
   else
-    # 最初のペインを作成
     tmux new-session -d -s ${SESSION}
 
     # 横方向に分割 (columns - 1 回)
@@ -39,9 +38,9 @@ ssh "$HOST" -t "
       tmux select-layout -t ${SESSION} even-horizontal
     done
 
-    # 各列を縦に分割
-    for i in \$(seq 0 \$(( ${COLS} - 1 ))); do
-      tmux split-window -v -t ${SESSION}:\${TMUX_WINDOW:-0}.\${i}
+    # 各列を縦に分割 (逆順で番号ずれを防止)
+    for i in \$(seq \$(( ${COLS} - 1 )) -1 0); do
+      tmux split-window -v -t ${SESSION}:0.\${i}
     done
 
     tmux select-pane -t ${SESSION}:0.0
