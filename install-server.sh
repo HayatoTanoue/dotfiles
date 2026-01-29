@@ -87,6 +87,23 @@ if ! command -v claude &> /dev/null; then
     curl -fsSL https://claude.ai/install.sh | bash
 fi
 
+# install nvm + node
+if ! command -v node &> /dev/null; then
+    echo "Installing nvm..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    nvm install --lts
+fi
+
+# install codex
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+if ! command -v codex &> /dev/null; then
+    echo "Installing OpenAI Codex..."
+    npm i -g @openai/codex
+fi
+
 # install rust (for filetree)
 if ! command -v cargo &> /dev/null; then
     echo "Installing Rust..."
@@ -155,6 +172,9 @@ fi
 mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
+
+# aliases
+ln -sf "$DOTFILES/.aliases" ~/.aliases
 
 # zshrc
 ln -sf "$DOTFILES/.zshrc.server" ~/.zshrc

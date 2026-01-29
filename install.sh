@@ -12,8 +12,20 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi
+brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi nvm
 brew install --cask font-hack-nerd-font
+
+# node (via nvm) + codex
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
+if ! command -v node &> /dev/null; then
+    echo "Installing Node.js via nvm..."
+    nvm install --lts
+fi
+if ! command -v codex &> /dev/null; then
+    echo "Installing OpenAI Codex..."
+    npm i -g @openai/codex
+fi
 
 # filetree (cargo)
 if ! command -v ft &> /dev/null; then
@@ -80,6 +92,9 @@ ya pkg add BennyOe/tokyo-night 2>/dev/null || true
 
 # starship
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
+
+# aliases
+ln -sf "$DOTFILES/.aliases" ~/.aliases
 
 # zshrc
 ln -sf "$DOTFILES/.zshrc" ~/.zshrc

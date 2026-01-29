@@ -23,6 +23,9 @@ function y() {
     rm -f -- "$tmp"
 }
 
+# claude
+alias claude-dg='claude --dangerously-skip-permissions'
+
 # bat (cat replacement)
 if command -v bat &> /dev/null; then
     alias cat='bat --paging=never'
