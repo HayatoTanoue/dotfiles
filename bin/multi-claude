@@ -1,9 +1,9 @@
 #!/bin/bash
-# 複数ペインでSSH + tmux セッションを開く
-# 使い方: multi-claude <host> [columns]
-#   multi-claude server1        - 2列構成 (デフォルト)
-#   multi-claude server1 3      - 3列構成
-#   multi-claude server1 4      - 4列構成
+# 複数ペインの tmux セッションを開く（SSH先で実行）
+# 使い方: multi-claude [columns]
+#   multi-claude        - 2列構成 (デフォルト)
+#   multi-claude 3      - 3列構成
+#   multi-claude 4      - 4列構成
 #
 # レイアウト (例: 3列):
 # ┌──────────┬──────────┬──────────┐
@@ -12,38 +12,26 @@
 # │ terminal │ terminal │ terminal │
 # └──────────┴──────────┴──────────┘
 
-if [ -z "$1" ]; then
-  echo "Usage: multi-claude <host> [columns]"
-  echo ""
-  echo "Examples:"
-  echo "  multi-claude server1       - 2列 x 2段 = 4ペイン"
-  echo "  multi-claude server1 3     - 3列 x 2段 = 6ペイン"
-  echo "  multi-claude server1 4     - 4列 x 2段 = 8ペイン"
-  exit 1
+COLS="${1:-2}"
+SESSION="multi-claude"
+
+if tmux has-session -t ${SESSION} 2>/dev/null; then
+  tmux attach -t ${SESSION}
+  exit 0
 fi
 
-HOST="$1"
-COLS="${2:-2}"
-SESSION="multi-${HOST}"
+tmux new-session -d -s ${SESSION}
 
-ssh "$HOST" -t "
-  if tmux has-session -t ${SESSION} 2>/dev/null; then
-    tmux attach -t ${SESSION}
-  else
-    tmux new-session -d -s ${SESSION}
+# 横方向に分割 (columns - 1 回)
+for i in $(seq 2 ${COLS}); do
+  tmux split-window -h -t ${SESSION}
+  tmux select-layout -t ${SESSION} even-horizontal
+done
 
-    # 横方向に分割 (columns - 1 回)
-    for i in \$(seq 2 ${COLS}); do
-      tmux split-window -h -t ${SESSION}
-      tmux select-layout -t ${SESSION} even-horizontal
-    done
+# 各列を縦に分割 (逆順で番号ずれを防止)
+for i in $(seq $(( ${COLS} - 1 )) -1 0); do
+  tmux split-window -v -t ${SESSION}:0.${i}
+done
 
-    # 各列を縦に分割 (逆順で番号ずれを防止)
-    for i in \$(seq \$(( ${COLS} - 1 )) -1 0); do
-      tmux split-window -v -t ${SESSION}:0.\${i}
-    done
-
-    tmux select-pane -t ${SESSION}:0.0
-    tmux attach -t ${SESSION}
-  fi
-"
+tmux select-pane -t ${SESSION}:0.0
+tmux attach -t ${SESSION}
