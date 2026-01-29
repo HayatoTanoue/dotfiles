@@ -75,6 +75,7 @@ ln -sf "$DOTFILES/.config/tmuxinator/ssh.yml" ~/.config/tmuxinator/ssh.yml
 mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/ssht" ~/bin/ssht
 ln -sf "$DOTFILES/bin/dev" ~/bin/dev
+ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 
 # ssht config

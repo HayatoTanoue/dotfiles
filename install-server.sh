@@ -207,6 +207,7 @@ fi
 # bin scripts
 mkdir -p ~/bin
 ln -sf "$DOTFILES/bin/dev" ~/bin/dev
+ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
 
