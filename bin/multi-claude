@@ -24,14 +24,14 @@ tmux new-session -d -s ${SESSION}
 
 # 横方向に分割 (columns - 1 回)
 for i in $(seq 2 ${COLS}); do
-  tmux split-window -h -t ${SESSION}
-  tmux select-layout -t ${SESSION} even-horizontal
+  tmux split-window -h -t ${SESSION}:1
+  tmux select-layout -t ${SESSION}:1 even-horizontal
 done
 
 # 各列を縦に分割 (逆順で番号ずれを防止)
-for i in $(seq $(( ${COLS} - 1 )) -1 0); do
-  tmux split-window -v -t ${SESSION}:0.${i}
+for i in $(seq ${COLS} -1 1); do
+  tmux split-window -v -t ${SESSION}:1.${i}
 done
 
-tmux select-pane -t ${SESSION}:0.0
+tmux select-pane -t ${SESSION}:1.1
 tmux attach -t ${SESSION}
