@@ -160,6 +160,7 @@ ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 
 # yazi config
 ln -sfn "$DOTFILES/.config/yazi" ~/.config/yazi
+source "$HOME/.cargo/env" 2>/dev/null || true
 ya pkg add BennyOe/tokyo-night 2>/dev/null || true
 
 # cheat config
