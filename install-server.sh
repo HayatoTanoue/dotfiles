@@ -104,6 +104,13 @@ if ! command -v codex &> /dev/null; then
     npm i -g @openai/codex
 fi
 
+# install tmuxinator
+if ! command -v tmuxinator &> /dev/null; then
+    echo "Installing tmuxinator..."
+    sudo apt-get install -y ruby
+    sudo gem install tmuxinator
+fi
+
 # install rust (for filetree)
 if ! command -v cargo &> /dev/null; then
     echo "Installing Rust..."
@@ -170,8 +177,18 @@ fi
 
 # bin scripts
 mkdir -p ~/bin
+ln -sf "$DOTFILES/bin/dev" ~/bin/dev
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
+
+# tmuxinator config
+mkdir -p ~/.config/tmuxinator
+ln -sf "$DOTFILES/.config/tmuxinator/dev.yml" ~/.config/tmuxinator/dev.yml
+ln -sf "$DOTFILES/.config/tmuxinator/ssh.yml" ~/.config/tmuxinator/ssh.yml
+
+# ssht config
+mkdir -p ~/.config/ssht
+ln -sf "$DOTFILES/.config/ssht/paths" ~/.config/ssht/paths
 
 # aliases
 ln -sf "$DOTFILES/.aliases" ~/.aliases
