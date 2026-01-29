@@ -18,20 +18,17 @@ dev vgc               エイリアスで起動
 
 ## レイアウト
 Window 1 (dev):
-┌─────────┬─────────────────────┐
-│  yazi   │                     │
-├─────────┤     terminal        │
-│   tig   │                     │
-└─────────┴─────────────────────┘
-
-Window 2 (git): lazygit
-
-## ウィンドウ切り替え
-C-a 1       dev (yazi + tig + terminal)
-C-a 2       git (lazygit)
+┌──────────┬──────────────────┐
+│  yazi    │   claude code    │
+├──────────┤                  │
+│ lazygit  ├──────────────────┤
+│          │   terminal       │
+└──────────┴──────────────────┘
+    35%            65%
 
 ## ペイン移動
 C-a h/j/k/l   vim風にペイン移動
+C-a 1         devウィンドウへ切替
 
 ## 関連コマンド
 ssht <host> dev <alias>   SSH先でdev構成
