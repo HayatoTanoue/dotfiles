@@ -5,9 +5,9 @@
 # レイアウト:
 # Window 1 (dev):
 # ┌──────────┬──────────────────┐
-# │  yazi    │   claude code    │
+# │  yazi    │   claude code    │  65%
 # ├──────────┼──────────────────┤
-# │ lazygit  │   terminal       │
+# │ lazygit  │   terminal       │  35%
 # └──────────┴──────────────────┘
 
 name: dev
@@ -20,4 +20,5 @@ windows:
         - yazi         # 左上: ファイラー
         - claude       # 右上: claude code
         - lazygit      # 左下: git
-        - ""           # 右下: ターミナル
+        -              # 右下: ターミナル
+          - tmux resize-pane -t dev:1.1 -y 65%

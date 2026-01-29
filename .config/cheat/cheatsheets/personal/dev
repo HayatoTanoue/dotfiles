@@ -19,9 +19,9 @@ dev vgc               エイリアスで起動
 ## レイアウト
 Window 1 (dev):
 ┌──────────┬──────────────────┐
-│  yazi    │   claude code    │
+│  yazi    │   claude code    │  65%
 ├──────────┼──────────────────┤
-│ lazygit  │   terminal       │
+│ lazygit  │   terminal       │  35%
 └──────────┴──────────────────┘
 
 ## ペイン移動
