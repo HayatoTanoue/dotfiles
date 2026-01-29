@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf locales
+    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf locales poppler-utils
 
     # setup UTF-8 locale
     sudo locale-gen en_US.UTF-8
@@ -142,6 +142,24 @@ if ! command -v yazi &> /dev/null; then
     rm -rf /tmp/yazi /tmp/yazi.zip
 fi
 
+# install glow (markdown renderer for yazi preview)
+if ! command -v glow &> /dev/null; then
+    echo "Installing glow..."
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "x86_64" ]; then
+        GLOW_ARCH="x86_64"
+    elif [ "$ARCH" = "aarch64" ]; then
+        GLOW_ARCH="arm64"
+    fi
+    GLOW_VERSION=$(curl -s "https://api.github.com/repos/charmbracelet/glow/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    curl -sLo /tmp/glow.tar.gz "https://github.com/charmbracelet/glow/releases/download/v${GLOW_VERSION}/glow_${GLOW_VERSION}_Linux_${GLOW_ARCH}.tar.gz"
+    cd /tmp && tar xf glow.tar.gz glow
+    mkdir -p ~/.local/bin
+    mv glow ~/.local/bin/
+    rm -f /tmp/glow.tar.gz
+    cd -
+fi
+
 # install cheat
 if ! command -v cheat &> /dev/null; then
     echo "Installing cheat..."
@@ -172,6 +190,7 @@ ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 ln -sfn "$DOTFILES/.config/yazi" ~/.config/yazi
 source "$HOME/.cargo/env" 2>/dev/null || true
 ya pkg add BennyOe/tokyo-night 2>/dev/null || true
+ya pkg add Reledia/glow 2>/dev/null || true
 
 # cheat config
 mkdir -p ~/.config/cheat/cheatsheets
