@@ -153,11 +153,10 @@ if ! command -v glow &> /dev/null; then
     fi
     GLOW_VERSION=$(curl -s "https://api.github.com/repos/charmbracelet/glow/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
     curl -sLo /tmp/glow.tar.gz "https://github.com/charmbracelet/glow/releases/download/v${GLOW_VERSION}/glow_${GLOW_VERSION}_Linux_${GLOW_ARCH}.tar.gz"
-    cd /tmp && tar xf glow.tar.gz glow
     mkdir -p ~/.local/bin
-    mv glow ~/.local/bin/
+    tar xf /tmp/glow.tar.gz -C /tmp --strip-components=1 "glow_${GLOW_VERSION}_Linux_${GLOW_ARCH}/glow"
+    mv /tmp/glow ~/.local/bin/
     rm -f /tmp/glow.tar.gz
-    cd -
 fi
 
 # install cheat
