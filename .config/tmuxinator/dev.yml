@@ -6,22 +6,18 @@
 # Window 1 (dev):
 # ┌──────────┬──────────────────┐
 # │  yazi    │   claude code    │
-# ├──────────┤                  │
-# │ lazygit  ├──────────────────┤
-# │          │   terminal       │
+# ├──────────┼──────────────────┤
+# │ lazygit  │   terminal       │
 # └──────────┴──────────────────┘
-#     35%            65%
 
 name: dev
 root: <%= @args[0] || "." %>
 
 windows:
   - dev:
-      layout: main-vertical
-      options:
-        main-pane-width: 65%
+      layout: tiled
       panes:
-        - claude       # 右上: claude code (メインペイン 65%)
         - yazi         # 左上: ファイラー
+        - claude       # 右上: claude code
         - lazygit      # 左下: git
         - ""           # 右下: ターミナル
