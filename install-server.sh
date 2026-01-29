@@ -125,11 +125,21 @@ if ! command -v ft &> /dev/null; then
     cargo install filetree
 fi
 
-# install yazi
+# install yazi (pre-built musl binary to avoid glibc version issues)
 if ! command -v yazi &> /dev/null; then
     echo "Installing yazi..."
-    source "$HOME/.cargo/env" 2>/dev/null || true
-    cargo install yazi-fm yazi-cli
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ]; then
+        YAZI_ARCH="aarch64-unknown-linux-musl"
+    else
+        YAZI_ARCH="x86_64-unknown-linux-musl"
+    fi
+    curl -sLo /tmp/yazi.zip "https://github.com/sxyazi/yazi/releases/latest/download/yazi-${YAZI_ARCH}.zip"
+    unzip -o /tmp/yazi.zip -d /tmp/yazi
+    mkdir -p ~/.local/bin
+    mv "/tmp/yazi/yazi-${YAZI_ARCH}/ya" ~/.local/bin/
+    mv "/tmp/yazi/yazi-${YAZI_ARCH}/yazi" ~/.local/bin/
+    rm -rf /tmp/yazi /tmp/yazi.zip
 fi
 
 # install cheat
