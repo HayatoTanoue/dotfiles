@@ -26,8 +26,11 @@ v               選択開始
 y / Enter       コピー
 q               終了
 
-## コマンドライン
-tmux ls                     セッション一覧
-tmux attach -t <name>       セッションにアタッチ
-tmux kill-session -t <name> セッション終了
-tmux new -s <name>          新規セッション
+## コマンドライン (エイリアス)
+tl                          セッション一覧
+ta <name>                   セッションにアタッチ
+td                          デタッチ
+tk <name>                   セッション終了
+tka                         全セッション終了
+tn <name>                   新規セッション
+mc [columns]                multi-claude (複数ペイン)
