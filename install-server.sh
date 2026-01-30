@@ -220,6 +220,9 @@ ln -sf "$DOTFILES/.config/tmuxinator/ssh.yml" ~/.config/tmuxinator/ssh.yml
 mkdir -p ~/.config/ssht
 ln -sf "$DOTFILES/.config/ssht/paths" ~/.config/ssht/paths
 
+# vimrc
+ln -sf "$DOTFILES/.vimrc" ~/.vimrc
+
 # aliases
 ln -sf "$DOTFILES/.aliases" ~/.aliases
 

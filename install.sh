@@ -95,6 +95,9 @@ ya pkg add yazi-rs/plugins:piper 2>/dev/null || true
 # starship
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 
+# vimrc
+ln -sf "$DOTFILES/.vimrc" ~/.vimrc
+
 # aliases
 ln -sf "$DOTFILES/.aliases" ~/.aliases
 
