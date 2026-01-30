@@ -1,0 +1,12 @@
+#!/bin/bash
+# Claude Code notification script
+# macOS: sound + OS notification
+# Linux/SSH: terminal bell (propagates to local terminal)
+
+if [ "$(uname)" = "Darwin" ]; then
+  afplay /System/Library/Sounds/Glass.aiff &
+  osascript -e 'display notification "入力を待っています" with title "Claude Code"' 2>/dev/null
+else
+  # terminal bell - reaches local terminal through SSH/tmux
+  printf '\a'
+fi

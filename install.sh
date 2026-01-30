@@ -77,6 +77,7 @@ ln -sf "$DOTFILES/bin/ssht" ~/bin/ssht
 ln -sf "$DOTFILES/bin/dev" ~/bin/dev
 ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
+ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
 
 # ssht config
 mkdir -p ~/.config/ssht
@@ -94,6 +95,10 @@ ya pkg add yazi-rs/plugins:piper 2>/dev/null || true
 
 # starship
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
+
+# claude code settings
+mkdir -p ~/.claude
+cp -n "$DOTFILES/.claude/settings.json" ~/.claude/settings.json 2>/dev/null || true
 
 # vimrc
 ln -sf "$DOTFILES/.vimrc" ~/.vimrc

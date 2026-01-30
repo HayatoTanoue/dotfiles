@@ -210,6 +210,7 @@ ln -sf "$DOTFILES/bin/dev" ~/bin/dev
 ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
+ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
 
 # tmuxinator config
 mkdir -p ~/.config/tmuxinator
@@ -219,6 +220,10 @@ ln -sf "$DOTFILES/.config/tmuxinator/ssh.yml" ~/.config/tmuxinator/ssh.yml
 # ssht config
 mkdir -p ~/.config/ssht
 ln -sf "$DOTFILES/.config/ssht/paths" ~/.config/ssht/paths
+
+# claude code settings
+mkdir -p ~/.claude
+cp -n "$DOTFILES/.claude/settings.json" ~/.claude/settings.json 2>/dev/null || true
 
 # vimrc
 ln -sf "$DOTFILES/.vimrc" ~/.vimrc
