@@ -1,5 +1,5 @@
 #!/bin/bash
-# multi-claude - launch multiple Claude Code panes with supervisor
+# multi-claude - launch multiple Claude Code panes with orchestrator
 # Usage: multi-claude [2|3|4]
 #
 # Layout:
@@ -8,7 +8,7 @@
 # ├──────────┼──────────┤
 # │ terminal │ terminal │  ~25%
 # ├──────────┴──────────┤
-# │     supervisor      │  ~20%
+# │    orchestrator     │  ~20%
 # └─────────────────────┘
 
 COLS="${1:-2}"
@@ -32,8 +32,8 @@ for i in $(seq ${COLS} -1 1); do
   tmux split-window -v -t ${SESSION}:1.${i} -p 30
 done
 
-# Full-width supervisor pane at the bottom
-tmux split-window -v -f -t ${SESSION}:1 -p 20 "claude-supervisor"
+# Full-width orchestrator pane at the bottom
+tmux split-window -v -f -t ${SESSION}:1 -p 20 "claude-orchestrator"
 
 # Focus first Claude pane
 tmux select-pane -t ${SESSION}:1.1

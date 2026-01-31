@@ -213,6 +213,7 @@ ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
 ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
 ln -sf "$DOTFILES/bin/claude-state-reporter" ~/bin/claude-state-reporter
 ln -sf "$DOTFILES/bin/claude-supervisor" ~/bin/claude-supervisor
+ln -sf "$DOTFILES/bin/claude-orchestrator" ~/bin/claude-orchestrator
 
 # tmuxinator config
 mkdir -p ~/.config/tmuxinator

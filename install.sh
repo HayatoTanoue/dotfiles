@@ -80,6 +80,7 @@ ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
 ln -sf "$DOTFILES/bin/claude-state-reporter" ~/bin/claude-state-reporter
 ln -sf "$DOTFILES/bin/claude-supervisor" ~/bin/claude-supervisor
+ln -sf "$DOTFILES/bin/claude-orchestrator" ~/bin/claude-orchestrator
 
 # ssht config
 mkdir -p ~/.config/ssht

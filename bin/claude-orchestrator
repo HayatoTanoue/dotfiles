@@ -1,0 +1,3 @@
+#!/bin/bash
+exec claude --dangerously-skip-permissions \
+  --append-system-prompt "$(cat "$HOME/dotfiles/.claude/agents/orchestrator.md")"
