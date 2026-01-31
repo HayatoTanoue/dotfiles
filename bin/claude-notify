@@ -1,16 +1,22 @@
 #!/bin/bash
 # Claude Code notification script
-# macOS: sound + OS notification
-# Linux/SSH: terminal bell (propagates to local terminal)
+# macOS: sound + OS notification with project name
+# Linux/SSH: terminal bell + tmux message with project name
+
+# extract project name from stdin JSON
+INPUT=$(cat)
+CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
+PROJECT=$(basename "${CWD:-unknown}")
 
 if [ "$(uname)" = "Darwin" ]; then
   afplay /System/Library/Sounds/Glass.aiff &
-  osascript -e 'display notification "入力を待っています" with title "Claude Code"' 2>/dev/null
+  osascript -e "display notification \"入力を待っています\" with title \"Claude Code: $PROJECT\"" 2>/dev/null
 else
-  # send bell to the current tmux client's tty
+  # send bell + tmux message to the client tty
   if [ -n "$TMUX" ]; then
     TTY=$(tmux display-message -p '#{client_tty}')
     printf '\a' > "$TTY"
+    tmux display-message "Claude Code: $PROJECT 完了"
   else
     printf '\a'
   fi
