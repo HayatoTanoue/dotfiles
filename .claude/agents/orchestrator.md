@@ -43,28 +43,6 @@ When you start, immediately:
    - Number of active sessions
    - Per-session: project name, current state, recent activity summary (2-3 lines)
 
-## Handling Notifications from Supervisor
-
-You receive messages from the supervisor pane in formats like:
-- `[project-name] 権限待ち: Permission required (pane: %3, session: abc123)`
-- `[project-name] 入力待ち: Waiting for input (pane: %5, session: abc123)`
-- `[project-name] 完了: Completed (pane: %3, session: abc123)`
-
-### On `permission` notification:
-1. Use `tmux capture-pane -t {pane} -p -S -30` to see what permission is being requested
-2. Check the activity log for that session to understand the context
-3. Report to the human concisely:
-   - What the session was working on (from activity log)
-   - What permission is being requested (from capture-pane)
-   - Ask whether to approve or reject
-
-### On `idle` or `stopped` notification:
-1. Read the activity log for that session
-2. Summarize what the session accomplished
-3. Report to the human:
-   - Brief summary of work done
-   - Ask if there's a new task to send
-
 ## Commands from Human
 
 - **"{N}を承認" / "approve {N}"**: Read status files, find session N, send `y` to its tmux pane

@@ -9,7 +9,6 @@ STATUS_DIR="$HOME/.claude-supervisor/status"
 POLL_INTERVAL=2
 STALE_THRESHOLD=3600  # 1 hour in seconds
 CURRENT_TMUX_SESSION=$(tmux display-message -p '#{session_name}' 2>/dev/null || echo '')
-ORCH_PANE_FILE="$HOME/.claude-supervisor/orchestrator-pane"
 
 # State display config
 state_icon() {
@@ -101,14 +100,6 @@ render() {
         tmux set -g message-style "bg=#f7768e,fg=#1a1b26,bold"
         tmux display-message -d 5000 "  🔔 $project: $label - $message  "
         (sleep 6 && tmux set -g message-style "bg=#7aa2f7,fg=#1a1b26") &
-        # Forward to orchestrator
-        if [ -f "$ORCH_PANE_FILE" ]; then
-          local orch_pane
-          orch_pane=$(cat "$ORCH_PANE_FILE")
-          if [ -n "$orch_pane" ]; then
-            tmux send-keys -t "$orch_pane" -l "[${project}] ${label}: ${message} (pane: ${tmux_pane})" && sleep 0.1 && tmux send-keys -t "$orch_pane" Enter
-          fi
-        fi
       fi
     fi
     PREV_STATES[$session]="$state"

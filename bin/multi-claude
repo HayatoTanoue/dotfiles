@@ -46,10 +46,6 @@ tmux split-window -v -t "$ORCH_PANE" -p 50 "claude-supervisor"
 # Start orchestrator in the top-left pane
 tmux send-keys -t "$ORCH_PANE" "claude-orchestrator" Enter
 
-# Tell supervisor where orchestrator is
-mkdir -p "$HOME/.claude-supervisor"
-echo "$ORCH_PANE" > "$HOME/.claude-supervisor/orchestrator-pane"
-
 # Focus first agent pane
 tmux select-pane -t "$FIRST_AGENT"
 
