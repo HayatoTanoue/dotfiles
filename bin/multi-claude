@@ -33,7 +33,10 @@ for i in $(seq ${COLS} -1 1); do
 done
 
 # Full-width orchestrator pane at the bottom
-tmux split-window -v -f -t ${SESSION}:1 -p 20 "claude-orchestrator"
+ORCH_PANE=$(tmux split-window -v -f -t ${SESSION}:1 -p 20 -P -F '#{pane_id}' "claude-orchestrator")
+
+# Auto-send initial status check after orchestrator starts
+(sleep 8 && tmux send-keys -t "$ORCH_PANE" "status" Enter) &
 
 # Focus first Claude pane
 tmux select-pane -t ${SESSION}:1.1
