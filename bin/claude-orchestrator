@@ -1,4 +1,5 @@
 #!/bin/bash
 cd "$HOME"
+export CLAUDE_ORCHESTRATOR=1
 exec claude --dangerously-skip-permissions \
   --append-system-prompt "$(cat "$HOME/dotfiles/.claude/agents/orchestrator.md")"

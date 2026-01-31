@@ -5,6 +5,9 @@
 
 set -euo pipefail
 
+# Skip logging for orchestrator session
+[ "${CLAUDE_ORCHESTRATOR:-}" = "1" ] && exit 0
+
 ACTIVITY_DIR="$HOME/.claude-supervisor/activity"
 mkdir -p "$ACTIVITY_DIR"
 
