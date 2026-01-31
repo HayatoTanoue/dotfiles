@@ -1,0 +1,90 @@
+#!/bin/bash
+# Claude state reporter - hook handler for claude-supervisor
+# Called by Claude Code hooks to report session state.
+# Reads hook event JSON from stdin, writes status to ~/.claude-supervisor/status/
+
+set -euo pipefail
+
+STATUS_DIR="$HOME/.claude-supervisor/status"
+mkdir -p "$STATUS_DIR"
+
+# Read hook event JSON from stdin
+INPUT=$(cat)
+
+# Extract fields from the hook event
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty' 2>/dev/null)
+HOOK_EVENT=$(echo "$INPUT" | jq -r '.hook_event_name // empty' 2>/dev/null)
+CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
+PROJECT=$(basename "${CWD:-unknown}")
+
+# session_id is required
+if [ -z "$SESSION_ID" ]; then
+  exit 0
+fi
+
+STATUS_FILE="$STATUS_DIR/${SESSION_ID}.json"
+
+# Determine state from hook event
+case "$HOOK_EVENT" in
+  SessionStart)
+    STATE="started"
+    MESSAGE="Session started"
+    ;;
+  UserPromptSubmit)
+    STATE="working"
+    MESSAGE="Processing user input"
+    ;;
+  Notification)
+    NOTIFICATION_TYPE=$(echo "$INPUT" | jq -r '.notification_type // empty' 2>/dev/null)
+    NOTIFICATION_MSG=$(echo "$INPUT" | jq -r '.message // empty' 2>/dev/null)
+
+    if [ "$NOTIFICATION_TYPE" = "permission_prompt" ]; then
+      STATE="permission"
+      MESSAGE="${NOTIFICATION_MSG:-Permission required}"
+    elif [ "$NOTIFICATION_TYPE" = "idle_prompt" ]; then
+      STATE="idle"
+      MESSAGE="${NOTIFICATION_MSG:-Waiting for input}"
+    else
+      STATE="idle"
+      MESSAGE="${NOTIFICATION_MSG:-Notification}"
+    fi
+    ;;
+  Stop)
+    STATE="stopped"
+    MESSAGE="Completed"
+    ;;
+  SessionEnd)
+    # Remove status file on session end
+    rm -f "$STATUS_FILE"
+    exit 0
+    ;;
+  *)
+    # Unknown event, ignore
+    exit 0
+    ;;
+esac
+
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# Write status JSON
+jq -n \
+  --arg session "$SESSION_ID" \
+  --arg project "$PROJECT" \
+  --arg state "$STATE" \
+  --arg event "$HOOK_EVENT" \
+  --arg cwd "${CWD:-}" \
+  --arg time "$TIMESTAMP" \
+  --arg message "$MESSAGE" \
+  '{session: $session, project: $project, state: $state, event: $event, cwd: $cwd, time: $time, message: $message}' \
+  > "$STATUS_FILE"
+
+# Send tmux notification for important events (permission, idle)
+if [ "$STATE" = "permission" ] || [ "$STATE" = "idle" ]; then
+  if [ -n "${TMUX:-}" ]; then
+    STATE_LABEL="権限待ち"
+    [ "$STATE" = "idle" ] && STATE_LABEL="入力待ち"
+    tmux set -g message-style "bg=#f7768e,fg=#1a1b26,bold"
+    tmux display-message -d 5000 "  🔔 $PROJECT: $STATE_LABEL - $MESSAGE  "
+    (sleep 6 && tmux set -g message-style "bg=#7aa2f7,fg=#1a1b26") &
+  fi
+fi

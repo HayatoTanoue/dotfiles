@@ -1,18 +1,37 @@
 #!/bin/bash
 # 複数ペインの tmux セッションを開く（SSH先で実行）
-# 使い方: multi-claude [columns]
-#   multi-claude        - 2列構成 (デフォルト)
-#   multi-claude 3      - 3列構成
-#   multi-claude 4      - 4列構成
+# 使い方: multi-claude [--supervisor] [columns]
+#   multi-claude              - 2列構成 (デフォルト)
+#   multi-claude 3            - 3列構成
+#   multi-claude --supervisor - 2列 + supervisor ペイン
+#   multi-claude --supervisor 3 - 3列 + supervisor ペイン
 #
-# レイアウト (例: 3列):
+# レイアウト (例: 3列 + supervisor):
 # ┌──────────┬──────────┬──────────┐
 # │ terminal │ terminal │ terminal │
 # ├──────────┼──────────┼──────────┤
 # │ terminal │ terminal │ terminal │
-# └──────────┴──────────┴──────────┘
+# ├──────────┴──────────┴──────────┤
+# │         supervisor             │
+# └────────────────────────────────┘
 
-COLS="${1:-2}"
+SUPERVISOR=false
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --supervisor)
+      SUPERVISOR=true
+      shift
+      ;;
+    *)
+      COLS="$1"
+      shift
+      ;;
+  esac
+done
+
+COLS="${COLS:-2}"
 SESSION="multi-claude"
 
 if tmux has-session -t ${SESSION} 2>/dev/null; then
@@ -32,6 +51,14 @@ done
 for i in $(seq ${COLS} -1 1); do
   tmux split-window -v -t ${SESSION}:1.${i} -p 30
 done
+
+# Add supervisor pane at the bottom
+if [ "$SUPERVISOR" = true ]; then
+  # Get the total number of panes
+  TOTAL_PANES=$(tmux list-panes -t ${SESSION}:1 | wc -l | tr -d ' ')
+  # Split the last pane vertically to create a full-width bottom pane
+  tmux split-window -v -t ${SESSION}:1.${TOTAL_PANES} -p 20 -f "claude-supervisor"
+fi
 
 tmux select-pane -t ${SESSION}:1.1
 tmux attach -t ${SESSION}

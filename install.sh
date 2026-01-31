@@ -78,6 +78,8 @@ ln -sf "$DOTFILES/bin/dev" ~/bin/dev
 ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
+ln -sf "$DOTFILES/bin/claude-state-reporter" ~/bin/claude-state-reporter
+ln -sf "$DOTFILES/bin/claude-supervisor" ~/bin/claude-supervisor
 
 # ssht config
 mkdir -p ~/.config/ssht

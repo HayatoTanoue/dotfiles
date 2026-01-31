@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf locales poppler-utils
+    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf jq locales poppler-utils
 
     # setup UTF-8 locale
     sudo locale-gen en_US.UTF-8
@@ -211,6 +211,8 @@ ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
 ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
+ln -sf "$DOTFILES/bin/claude-state-reporter" ~/bin/claude-state-reporter
+ln -sf "$DOTFILES/bin/claude-supervisor" ~/bin/claude-supervisor
 
 # tmuxinator config
 mkdir -p ~/.config/tmuxinator

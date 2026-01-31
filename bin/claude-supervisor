@@ -1,0 +1,199 @@
+#!/bin/bash
+# Claude Supervisor - dashboard for monitoring multiple Claude Code instances
+# Polls ~/.claude-supervisor/status/ and displays a live dashboard.
+# Run in a tmux pane for best results.
+
+set -euo pipefail
+
+STATUS_DIR="$HOME/.claude-supervisor/status"
+POLL_INTERVAL=2
+STALE_THRESHOLD=3600  # 1 hour in seconds
+
+# State display config
+state_icon() {
+  case "$1" in
+    started)    echo "🔵" ;;
+    working)    echo "🔵" ;;
+    permission) echo "🔴" ;;
+    idle)       echo "🟡" ;;
+    stopped)    echo "🟢" ;;
+    stale)      echo "⚫" ;;
+    *)          echo "⚪" ;;
+  esac
+}
+
+state_label() {
+  case "$1" in
+    started)    echo "開始"   ;;
+    working)    echo "作業中" ;;
+    permission) echo "権限待ち" ;;
+    idle)       echo "入力待ち" ;;
+    stopped)    echo "完了"   ;;
+    stale)      echo "不明"   ;;
+    *)          echo "$1"    ;;
+  esac
+}
+
+# Format relative time
+relative_time() {
+  local timestamp="$1"
+  local now
+  now=$(date +%s)
+
+  # Parse ISO 8601 timestamp to epoch
+  local then
+  if date --version >/dev/null 2>&1; then
+    # GNU date
+    then=$(date -d "$timestamp" +%s 2>/dev/null || echo "$now")
+  else
+    # BSD date (macOS)
+    # Convert ISO format for BSD date
+    local converted
+    converted=$(echo "$timestamp" | sed 's/T/ /;s/Z//')
+    then=$(date -jf "%Y-%m-%d %H:%M:%S" "$converted" +%s 2>/dev/null || echo "$now")
+  fi
+
+  local diff=$((now - then))
+  if [ "$diff" -lt 0 ]; then
+    diff=0
+  fi
+
+  if [ "$diff" -lt 60 ]; then
+    echo "${diff}s ago"
+  elif [ "$diff" -lt 3600 ]; then
+    echo "$((diff / 60))m ago"
+  else
+    echo "$((diff / 3600))h ago"
+  fi
+}
+
+# Track previous states for notification on change
+declare -A PREV_STATES
+
+# Main loop
+cleanup() {
+  tput cnorm 2>/dev/null  # restore cursor
+  exit 0
+}
+trap cleanup INT TERM
+
+tput civis 2>/dev/null  # hide cursor
+
+while true; do
+  mkdir -p "$STATUS_DIR"
+
+  # Collect status entries
+  ENTRIES=()
+
+  for f in "$STATUS_DIR"/*.json; do
+    [ -f "$f" ] || continue
+
+    SESSION=$(jq -r '.session // empty' "$f" 2>/dev/null)
+    PROJECT=$(jq -r '.project // empty' "$f" 2>/dev/null)
+    STATE=$(jq -r '.state // empty' "$f" 2>/dev/null)
+    TIMESTAMP=$(jq -r '.time // empty' "$f" 2>/dev/null)
+    MESSAGE=$(jq -r '.message // empty' "$f" 2>/dev/null)
+
+    [ -z "$SESSION" ] && continue
+
+    # Check for stale entries
+    local_now=$(date +%s)
+    if date --version >/dev/null 2>&1; then
+      file_time=$(date -d "$TIMESTAMP" +%s 2>/dev/null || echo "$local_now")
+    else
+      converted=$(echo "$TIMESTAMP" | sed 's/T/ /;s/Z//')
+      file_time=$(date -jf "%Y-%m-%d %H:%M:%S" "$converted" +%s 2>/dev/null || echo "$local_now")
+    fi
+    age=$((local_now - file_time))
+
+    if [ "$age" -gt "$STALE_THRESHOLD" ]; then
+      # Auto-delete stale entries
+      rm -f "$f"
+      continue
+    fi
+
+    # Send tmux notification on state change to permission/idle
+    if [ "$STATE" = "permission" ] || [ "$STATE" = "idle" ]; then
+      PREV="${PREV_STATES[$SESSION]:-}"
+      if [ "$PREV" != "$STATE" ] && [ -n "${TMUX:-}" ]; then
+        LABEL=$(state_label "$STATE")
+        tmux set -g message-style "bg=#f7768e,fg=#1a1b26,bold"
+        tmux display-message -d 5000 "  🔔 $PROJECT: $LABEL - $MESSAGE  "
+        (sleep 6 && tmux set -g message-style "bg=#7aa2f7,fg=#1a1b26") &
+      fi
+    fi
+    PREV_STATES[$SESSION]="$STATE"
+
+    # Sort priority: permission=0, idle=1, working=2, started=3, stopped=4
+    case "$STATE" in
+      permission) SORT_KEY="0" ;;
+      idle)       SORT_KEY="1" ;;
+      working)    SORT_KEY="2" ;;
+      started)    SORT_KEY="3" ;;
+      stopped)    SORT_KEY="4" ;;
+      *)          SORT_KEY="5" ;;
+    esac
+
+    ICON=$(state_icon "$STATE")
+    LABEL=$(state_label "$STATE")
+    REL_TIME=$(relative_time "$TIMESTAMP")
+
+    # Build entry line
+    LINE=$(printf "  %s %-14s %-8s (%s)" "$ICON" "$PROJECT" "$LABEL" "$REL_TIME")
+    DETAIL=""
+    if [ "$STATE" = "permission" ] || [ "$STATE" = "idle" ]; then
+      DETAIL=$(printf "     └─ %s" "$MESSAGE")
+    fi
+
+    ENTRIES+=("${SORT_KEY}|${LINE}|${DETAIL}")
+  done
+
+  # Sort entries by priority
+  SORTED=()
+  if [ ${#ENTRIES[@]} -gt 0 ]; then
+    IFS=$'\n' SORTED=($(printf '%s\n' "${ENTRIES[@]}" | sort))
+    unset IFS
+  fi
+
+  # Render dashboard
+  clear
+
+  TERM_COLS=$(tput cols 2>/dev/null || echo 40)
+  INNER=$((TERM_COLS - 2))
+  [ "$INNER" -lt 38 ] && INNER=38
+
+  # Header
+  printf "╔══ Claude Supervisor "
+  printf '═%.0s' $(seq 1 $((INNER - 20)))
+  printf "╗\n"
+
+  printf "║"
+  printf ' %.0s' $(seq 1 "$INNER")
+  printf "║\n"
+
+  if [ ${#SORTED[@]} -eq 0 ]; then
+    MSG="  No active Claude sessions"
+    printf "║  %-*s║\n" $((INNER - 2)) "$MSG"
+  else
+    for entry in "${SORTED[@]}"; do
+      LINE=$(echo "$entry" | cut -d'|' -f2)
+      DETAIL=$(echo "$entry" | cut -d'|' -f3)
+
+      printf "║  %-*s║\n" $((INNER - 2)) "$LINE"
+      if [ -n "$DETAIL" ]; then
+        printf "║  %-*s║\n" $((INNER - 2)) "$DETAIL"
+      fi
+    done
+  fi
+
+  printf "║"
+  printf ' %.0s' $(seq 1 "$INNER")
+  printf "║\n"
+
+  # Footer
+  printf "╚"
+  printf '═%.0s' $(seq 1 "$INNER")
+  printf "╝\n"
+
+  sleep "$POLL_INTERVAL"
+done

@@ -1,12 +1,45 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$HOME/bin/claude-state-reporter" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$HOME/bin/claude-state-reporter" }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          { "type": "command", "command": "$HOME/bin/claude-state-reporter" }
+        ]
+      },
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          { "type": "command", "command": "$HOME/bin/claude-state-reporter" }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/bin/claude-notify"
-          }
+          { "type": "command", "command": "$HOME/bin/claude-notify" },
+          { "type": "command", "command": "$HOME/bin/claude-state-reporter" }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$HOME/bin/claude-state-reporter" }
         ]
       }
     ]
