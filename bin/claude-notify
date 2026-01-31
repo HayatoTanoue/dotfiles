@@ -16,7 +16,7 @@ else
   if [ -n "$TMUX" ]; then
     TTY=$(tmux display-message -p '#{client_tty}')
     printf '\a' > "$TTY"
-    tmux display-popup -w 40 -h 3 -d 3 -style "bg=#1a1b26,fg=#7aa2f7" "echo '  Claude Code: $PROJECT 完了'"
+    tmux display-popup -w 40 -h 3 -E "printf '\n\033[1;34m  Claude Code: $PROJECT 完了\033[0m\n'; sleep 3"
   else
     printf '\a'
   fi
