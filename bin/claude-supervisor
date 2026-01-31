@@ -9,6 +9,7 @@ STATUS_DIR="$HOME/.claude-supervisor/status"
 POLL_INTERVAL=2
 STALE_THRESHOLD=3600  # 1 hour in seconds
 CURRENT_TMUX_SESSION=$(tmux display-message -p '#{session_name}' 2>/dev/null || echo '')
+ORCH_PANE_FILE="$HOME/.claude-supervisor/orchestrator-pane"
 
 # State display config
 state_icon() {
@@ -90,15 +91,24 @@ render() {
       continue
     fi
 
-    # Send tmux notification on state change to permission/idle
+    # Notify on state change to permission/idle
     if [ "$state" = "permission" ] || [ "$state" = "idle" ]; then
       local prev="${PREV_STATES[$session]:-}"
       if [ "$prev" != "$state" ] && [ -n "${TMUX:-}" ]; then
         local label
         label=$(state_label "$state")
+        # tmux status bar notification
         tmux set -g message-style "bg=#f7768e,fg=#1a1b26,bold"
         tmux display-message -d 5000 "  🔔 $project: $label - $message  "
         (sleep 6 && tmux set -g message-style "bg=#7aa2f7,fg=#1a1b26") &
+        # Forward to orchestrator
+        if [ -f "$ORCH_PANE_FILE" ]; then
+          local orch_pane
+          orch_pane=$(cat "$ORCH_PANE_FILE")
+          if [ -n "$orch_pane" ]; then
+            tmux send-keys -t "$orch_pane" "[${project}] ${label}: ${message} (pane: ${tmux_pane})" Enter
+          fi
+        fi
       fi
     fi
     PREV_STATES[$session]="$state"

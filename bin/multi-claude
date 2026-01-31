@@ -33,8 +33,12 @@ for i in $(seq ${COLS} -1 1); do
 done
 
 # Bottom row: supervisor (left) + orchestrator (right)
-tmux split-window -v -f -t ${SESSION}:1 -p 20 "claude-supervisor"
-tmux split-window -h -t {bottom} "claude-orchestrator"
+ORCH_PANE=$(tmux split-window -v -f -t ${SESSION}:1 -p 20 -P -F '#{pane_id}' "claude-orchestrator")
+tmux split-window -h -b -t "$ORCH_PANE" "claude-supervisor"
+
+# Tell supervisor where orchestrator is
+mkdir -p "$HOME/.claude-supervisor"
+echo "$ORCH_PANE" > "$HOME/.claude-supervisor/orchestrator-pane"
 
 # Focus first Claude pane
 tmux select-pane -t ${SESSION}:1.1
