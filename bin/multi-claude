@@ -1,17 +1,19 @@
 #!/bin/bash
 # multi-claude - launch multiple Claude Code panes with orchestrator
-# Usage: multi-claude [2|3|4]
+# Usage: multi-claude [1|2|3|4]
 #
 # Layout:
-# ┌──────────┬──────────┐
-# │ Claude 1 │ Claude 2 │  ~55%
-# ├──────────┼──────────┤
-# │ terminal │ terminal │  ~25%
-# ├──────────┬──────────┤
-# │supervisor│orchestrat│  ~20%
-# └──────────┴──────────┘
+# ┌────────────┬──────────┐
+# │            │ Agent 1  │
+# │orchestrator├──────────┤
+# │            │ Agent 2  │
+# ├────────────┤  ...     │
+# │ supervisor │ Agent N  │
+# ├────────────┤          │
+# │ terminal   │          │
+# └────────────┴──────────┘
 
-COLS="${1:-2}"
+AGENTS="${1:-2}"
 SESSION="multi-claude"
 
 if tmux has-session -t ${SESSION} 2>/dev/null; then
@@ -19,32 +21,36 @@ if tmux has-session -t ${SESSION} 2>/dev/null; then
   exit 0
 fi
 
-tmux new-session -d -s ${SESSION}
-
 # Clean up stale status/activity files from previous sessions
 rm -f "$HOME/.claude-supervisor/status/"*.json 2>/dev/null
 rm -f "$HOME/.claude-supervisor/activity/"*.jsonl 2>/dev/null
 
-# Create columns (columns - 1 horizontal splits)
-for i in $(seq 2 ${COLS}); do
-  tmux split-window -h -t ${SESSION}:1
-  tmux select-layout -t ${SESSION}:1 even-horizontal
+# Create session - initial pane becomes orchestrator
+ORCH_PANE=$(tmux new-session -d -s ${SESSION} -P -F '#{pane_id}')
+
+# Split left (40%) / right (60%) - right side for agents
+FIRST_AGENT=$(tmux split-window -h -t "$ORCH_PANE" -p 60 -P -F '#{pane_id}')
+
+# Split right side into N agent panes (evenly spaced)
+LAST_AGENT="$FIRST_AGENT"
+for i in $(seq 1 $((AGENTS - 1))); do
+  REMAINING=$((AGENTS - i))
+  PCT=$(( REMAINING * 100 / (REMAINING + 1) ))
+  LAST_AGENT=$(tmux split-window -v -t "$LAST_AGENT" -p $PCT -P -F '#{pane_id}')
 done
 
-# Split each column vertically for terminal (reverse order to keep pane numbering stable)
-for i in $(seq ${COLS} -1 1); do
-  tmux split-window -v -t ${SESSION}:1.${i} -p 30
-done
+# Split left column: orchestrator (50%) / supervisor (25%) / terminal (25%)
+tmux split-window -v -t "$ORCH_PANE" -p 50
+tmux split-window -v -t "$ORCH_PANE" -p 50 "claude-supervisor"
 
-# Bottom row: supervisor (left) + orchestrator (right)
-ORCH_PANE=$(tmux split-window -v -f -t ${SESSION}:1 -p 20 -P -F '#{pane_id}' "claude-orchestrator")
-tmux split-window -h -b -t "$ORCH_PANE" "claude-supervisor"
+# Start orchestrator in the top-left pane
+tmux send-keys -t "$ORCH_PANE" "claude-orchestrator" Enter
 
 # Tell supervisor where orchestrator is
 mkdir -p "$HOME/.claude-supervisor"
 echo "$ORCH_PANE" > "$HOME/.claude-supervisor/orchestrator-pane"
 
-# Focus first Claude pane
-tmux select-pane -t ${SESSION}:1.1
+# Focus first agent pane
+tmux select-pane -t "$FIRST_AGENT"
 
 tmux attach -t ${SESSION}
