@@ -42,6 +42,20 @@
           { "type": "command", "command": "$HOME/bin/claude-state-reporter" }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$HOME/bin/claude-activity-logger", "async": true }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          { "type": "command", "command": "$HOME/bin/claude-activity-logger", "async": true }
+        ]
+      }
     ]
   }
 }

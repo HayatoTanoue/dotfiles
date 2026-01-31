@@ -1,0 +1,85 @@
+#!/bin/bash
+# Claude activity logger - PostToolUse hook handler
+# Logs tool usage to ~/.claude-supervisor/activity/{session_id}.jsonl
+# Called by PostToolUse / PostToolUseFailure hooks with JSON on stdin.
+
+set -euo pipefail
+
+ACTIVITY_DIR="$HOME/.claude-supervisor/activity"
+mkdir -p "$ACTIVITY_DIR"
+
+# Read hook event JSON from stdin
+INPUT=$(cat)
+
+# Extract fields
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty' 2>/dev/null)
+HOOK_EVENT=$(echo "$INPUT" | jq -r '.hook_event_name // empty' 2>/dev/null)
+TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
+PROJECT=$(basename "${CWD:-unknown}")
+TOOL_INPUT=$(echo "$INPUT" | jq -r '.tool_input // empty' 2>/dev/null)
+
+# session_id and tool_name are required
+if [ -z "$SESSION_ID" ] || [ -z "$TOOL_NAME" ]; then
+  exit 0
+fi
+
+LOG_FILE="$ACTIVITY_DIR/${SESSION_ID}.jsonl"
+
+# Extract a concise detail string based on tool type (no file content)
+case "$TOOL_NAME" in
+  Bash)
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '.command // empty' 2>/dev/null)
+    ;;
+  Read)
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '.file_path // empty' 2>/dev/null)
+    ;;
+  Edit|Write)
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '.file_path // empty' 2>/dev/null)
+    ;;
+  Glob)
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '.pattern // empty' 2>/dev/null)
+    ;;
+  Grep)
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '.pattern // empty' 2>/dev/null)
+    ;;
+  Task)
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '.description // empty' 2>/dev/null)
+    ;;
+  WebFetch)
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '.url // empty' 2>/dev/null)
+    ;;
+  WebSearch)
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '.query // empty' 2>/dev/null)
+    ;;
+  *)
+    # Generic: try command, file_path, pattern, or first string value
+    DETAIL=$(echo "$TOOL_INPUT" | jq -r '(.command // .file_path // .pattern // .description // "") | if type == "string" then . else "" end' 2>/dev/null)
+    ;;
+esac
+
+# Determine error field
+ERROR=""
+if [ "$HOOK_EVENT" = "PostToolUseFailure" ]; then
+  ERROR=$(echo "$INPUT" | jq -r '.tool_error // "unknown error"' 2>/dev/null)
+fi
+
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# Append log entry
+jq -n -c \
+  --arg time "$TIMESTAMP" \
+  --arg tool "$TOOL_NAME" \
+  --arg detail "$DETAIL" \
+  --arg project "$PROJECT" \
+  --arg error "$ERROR" \
+  '{time: $time, tool: $tool, detail: $detail, project: $project, error: $error}' \
+  >> "$LOG_FILE"
+
+# Keep only the last 30 entries
+LINES=$(wc -l < "$LOG_FILE")
+if [ "$LINES" -gt 30 ]; then
+  TMPFILE=$(mktemp)
+  tail -n 30 "$LOG_FILE" > "$TMPFILE"
+  mv "$TMPFILE" "$LOG_FILE"
+fi

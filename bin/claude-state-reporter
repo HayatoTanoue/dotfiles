@@ -54,8 +54,9 @@ case "$HOOK_EVENT" in
     MESSAGE="Completed"
     ;;
   SessionEnd)
-    # Remove status file on session end
+    # Remove status file and activity log on session end
     rm -f "$STATUS_FILE"
+    rm -f "$HOME/.claude-supervisor/activity/${SESSION_ID}.jsonl"
     exit 0
     ;;
   *)

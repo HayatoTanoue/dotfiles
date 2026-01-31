@@ -81,6 +81,7 @@ ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
 ln -sf "$DOTFILES/bin/claude-state-reporter" ~/bin/claude-state-reporter
 ln -sf "$DOTFILES/bin/claude-supervisor" ~/bin/claude-supervisor
 ln -sf "$DOTFILES/bin/claude-orchestrator" ~/bin/claude-orchestrator
+ln -sf "$DOTFILES/bin/claude-activity-logger" ~/bin/claude-activity-logger
 
 # ssht config
 mkdir -p ~/.config/ssht
