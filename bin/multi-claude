@@ -7,9 +7,9 @@
 # │ Claude 1 │ Claude 2 │  ~55%
 # ├──────────┼──────────┤
 # │ terminal │ terminal │  ~25%
-# ├──────────┴──────────┤
-# │    orchestrator     │  ~20%
-# └─────────────────────┘
+# ├──────────┬──────────┤
+# │supervisor│orchestrat│  ~20%
+# └──────────┴──────────┘
 
 COLS="${1:-2}"
 SESSION="multi-claude"
@@ -32,11 +32,9 @@ for i in $(seq ${COLS} -1 1); do
   tmux split-window -v -t ${SESSION}:1.${i} -p 30
 done
 
-# Full-width orchestrator pane at the bottom
-ORCH_PANE=$(tmux split-window -v -f -t ${SESSION}:1 -p 20 -P -F '#{pane_id}' "claude-orchestrator")
-
-# Auto-send initial status check after orchestrator starts
-(sleep 8 && tmux send-keys -t "$ORCH_PANE" "status" Enter) &
+# Bottom row: supervisor (left) + orchestrator (right)
+tmux split-window -v -f -t ${SESSION}:1 -p 20 "claude-supervisor"
+tmux split-window -h -t {bottom} "claude-orchestrator"
 
 # Focus first Claude pane
 tmux select-pane -t ${SESSION}:1.1
