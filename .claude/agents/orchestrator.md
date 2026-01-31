@@ -77,9 +77,9 @@ You receive messages from the supervisor pane in formats like:
 
 ## Operations
 
-Send text to a Claude session's tmux pane:
+Send text to a Claude session's tmux pane (always split text and Enter to avoid dropped keystrokes):
 ```bash
-tmux send-keys -t {tmux_pane} "{text}" Enter
+tmux send-keys -t {tmux_pane} -l "{text}" && sleep 0.1 && tmux send-keys -t {tmux_pane} Enter
 ```
 
 ## Important Principles

@@ -106,7 +106,7 @@ render() {
           local orch_pane
           orch_pane=$(cat "$ORCH_PANE_FILE")
           if [ -n "$orch_pane" ]; then
-            tmux send-keys -t "$orch_pane" "[${project}] ${label}: ${message} (pane: ${tmux_pane})" Enter
+            tmux send-keys -t "$orch_pane" -l "[${project}] ${label}: ${message} (pane: ${tmux_pane})" && sleep 0.1 && tmux send-keys -t "$orch_pane" Enter
           fi
         fi
       fi
@@ -213,7 +213,7 @@ send_to_pane() {
     return
   fi
 
-  tmux send-keys -t "$pane" "$text" Enter
+  tmux send-keys -t "$pane" -l "$text" && sleep 0.1 && tmux send-keys -t "$pane" Enter
 }
 
 jump_to_pane() {
