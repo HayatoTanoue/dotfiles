@@ -100,6 +100,10 @@ ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
 mkdir -p ~/.claude
 sed "s|\$HOME|$HOME|g" "$DOTFILES/.claude/settings.json" > ~/.claude/settings.json
 
+# claude code agents
+mkdir -p ~/.claude/agents
+ln -sfn "$DOTFILES/.claude/agents/dev-doc-architect" ~/.claude/agents/dev-doc-architect
+
 # vimrc
 ln -sf "$DOTFILES/.vimrc" ~/.vimrc
 
