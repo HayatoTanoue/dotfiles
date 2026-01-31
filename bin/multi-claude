@@ -1,37 +1,17 @@
 #!/bin/bash
-# 複数ペインの tmux セッションを開く（SSH先で実行）
-# 使い方: multi-claude [--supervisor] [columns]
-#   multi-claude              - 2列構成 (デフォルト)
-#   multi-claude 3            - 3列構成
-#   multi-claude --supervisor - 2列 + supervisor ペイン
-#   multi-claude --supervisor 3 - 3列 + supervisor ペイン
+# multi-claude - launch multiple Claude Code panes with supervisor
+# Usage: multi-claude [2|3|4]
 #
-# レイアウト (例: 3列 + supervisor):
-# ┌──────────┬──────────┬──────────┐
-# │ terminal │ terminal │ terminal │
-# ├──────────┼──────────┼──────────┤
-# │ terminal │ terminal │ terminal │
-# ├──────────┴──────────┴──────────┤
-# │         supervisor             │
-# └────────────────────────────────┘
+# Layout:
+# ┌──────────┬──────────┐
+# │ Claude 1 │ Claude 2 │  ~55%
+# ├──────────┼──────────┤
+# │ terminal │ terminal │  ~25%
+# ├──────────┴──────────┤
+# │     supervisor      │  ~20%
+# └─────────────────────┘
 
-SUPERVISOR=false
-
-# Parse arguments
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --supervisor)
-      SUPERVISOR=true
-      shift
-      ;;
-    *)
-      COLS="$1"
-      shift
-      ;;
-  esac
-done
-
-COLS="${COLS:-2}"
+COLS="${1:-2}"
 SESSION="multi-claude"
 
 if tmux has-session -t ${SESSION} 2>/dev/null; then
@@ -41,24 +21,21 @@ fi
 
 tmux new-session -d -s ${SESSION}
 
-# 横方向に分割 (columns - 1 回)
+# Create columns (columns - 1 horizontal splits)
 for i in $(seq 2 ${COLS}); do
   tmux split-window -h -t ${SESSION}:1
   tmux select-layout -t ${SESSION}:1 even-horizontal
 done
 
-# 各列を縦に分割 (逆順で番号ずれを防止)
+# Split each column vertically for terminal (reverse order to keep pane numbering stable)
 for i in $(seq ${COLS} -1 1); do
   tmux split-window -v -t ${SESSION}:1.${i} -p 30
 done
 
-# Add supervisor pane at the bottom
-if [ "$SUPERVISOR" = true ]; then
-  # Get the total number of panes
-  TOTAL_PANES=$(tmux list-panes -t ${SESSION}:1 | wc -l | tr -d ' ')
-  # Split the last pane vertically to create a full-width bottom pane
-  tmux split-window -v -t ${SESSION}:1.${TOTAL_PANES} -p 20 -f "claude-supervisor"
-fi
+# Full-width supervisor pane at the bottom
+tmux split-window -v -f -t ${SESSION}:1 -p 20 "claude-supervisor"
 
+# Focus first Claude pane
 tmux select-pane -t ${SESSION}:1.1
+
 tmux attach -t ${SESSION}

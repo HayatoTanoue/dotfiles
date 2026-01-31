@@ -75,7 +75,8 @@ jq -n \
   --arg cwd "${CWD:-}" \
   --arg time "$TIMESTAMP" \
   --arg message "$MESSAGE" \
-  '{session: $session, project: $project, state: $state, event: $event, cwd: $cwd, time: $time, message: $message}' \
+  --arg tmux_pane "${TMUX_PANE:-}" \
+  '{session: $session, project: $project, state: $state, event: $event, cwd: $cwd, time: $time, message: $message, tmux_pane: $tmux_pane}' \
   > "$STATUS_FILE"
 
 # Send tmux notification for important events (permission, idle)

@@ -1,7 +1,7 @@
 #!/bin/bash
-# Claude Supervisor - dashboard for monitoring multiple Claude Code instances
-# Polls ~/.claude-supervisor/status/ and displays a live dashboard.
-# Run in a tmux pane for best results.
+# Claude Supervisor - interactive control panel for multiple Claude Code instances
+# Polls ~/.claude-supervisor/status/ and displays numbered session list.
+# Commands: {n} jump, {n}y approve, {n}n reject, {n} {text} send, q quit
 
 set -euo pipefail
 
@@ -17,7 +17,6 @@ state_icon() {
     permission) echo "🔴" ;;
     idle)       echo "🟡" ;;
     stopped)    echo "🟢" ;;
-    stale)      echo "⚫" ;;
     *)          echo "⚪" ;;
   esac
 }
@@ -29,171 +28,204 @@ state_label() {
     permission) echo "権限待ち" ;;
     idle)       echo "入力待ち" ;;
     stopped)    echo "完了"   ;;
-    stale)      echo "不明"   ;;
     *)          echo "$1"    ;;
   esac
-}
-
-# Format relative time
-relative_time() {
-  local timestamp="$1"
-  local now
-  now=$(date +%s)
-
-  # Parse ISO 8601 timestamp to epoch
-  local then
-  if date --version >/dev/null 2>&1; then
-    # GNU date
-    then=$(date -d "$timestamp" +%s 2>/dev/null || echo "$now")
-  else
-    # BSD date (macOS)
-    # Convert ISO format for BSD date
-    local converted
-    converted=$(echo "$timestamp" | sed 's/T/ /;s/Z//')
-    then=$(date -jf "%Y-%m-%d %H:%M:%S" "$converted" +%s 2>/dev/null || echo "$now")
-  fi
-
-  local diff=$((now - then))
-  if [ "$diff" -lt 0 ]; then
-    diff=0
-  fi
-
-  if [ "$diff" -lt 60 ]; then
-    echo "${diff}s ago"
-  elif [ "$diff" -lt 3600 ]; then
-    echo "$((diff / 60))m ago"
-  else
-    echo "$((diff / 3600))h ago"
-  fi
 }
 
 # Track previous states for notification on change
 declare -A PREV_STATES
 
-# Main loop
+# Indexed arrays for pane lookup
+declare -a PANE_IDS=()
+declare -a ENTRY_LINES=()
+
 cleanup() {
   tput cnorm 2>/dev/null  # restore cursor
+  printf "\n"
   exit 0
 }
 trap cleanup INT TERM
 
-tput civis 2>/dev/null  # hide cursor
-
-while true; do
+# Render the dashboard and return entries
+render() {
   mkdir -p "$STATUS_DIR"
 
-  # Collect status entries
-  ENTRIES=()
+  # Collect status entries: sort_key|project|state|label|message|tmux_pane
+  local entries=()
 
   for f in "$STATUS_DIR"/*.json; do
     [ -f "$f" ] || continue
 
-    SESSION=$(jq -r '.session // empty' "$f" 2>/dev/null)
-    PROJECT=$(jq -r '.project // empty' "$f" 2>/dev/null)
-    STATE=$(jq -r '.state // empty' "$f" 2>/dev/null)
-    TIMESTAMP=$(jq -r '.time // empty' "$f" 2>/dev/null)
-    MESSAGE=$(jq -r '.message // empty' "$f" 2>/dev/null)
+    local session project state timestamp message tmux_pane
+    session=$(jq -r '.session // empty' "$f" 2>/dev/null)
+    project=$(jq -r '.project // empty' "$f" 2>/dev/null)
+    state=$(jq -r '.state // empty' "$f" 2>/dev/null)
+    timestamp=$(jq -r '.time // empty' "$f" 2>/dev/null)
+    message=$(jq -r '.message // empty' "$f" 2>/dev/null)
+    tmux_pane=$(jq -r '.tmux_pane // empty' "$f" 2>/dev/null)
 
-    [ -z "$SESSION" ] && continue
+    [ -z "$session" ] && continue
 
     # Check for stale entries
+    local local_now file_time age
     local_now=$(date +%s)
     if date --version >/dev/null 2>&1; then
-      file_time=$(date -d "$TIMESTAMP" +%s 2>/dev/null || echo "$local_now")
+      file_time=$(date -d "$timestamp" +%s 2>/dev/null || echo "$local_now")
     else
-      converted=$(echo "$TIMESTAMP" | sed 's/T/ /;s/Z//')
+      local converted
+      converted=$(echo "$timestamp" | sed 's/T/ /;s/Z//')
       file_time=$(date -jf "%Y-%m-%d %H:%M:%S" "$converted" +%s 2>/dev/null || echo "$local_now")
     fi
     age=$((local_now - file_time))
 
     if [ "$age" -gt "$STALE_THRESHOLD" ]; then
-      # Auto-delete stale entries
       rm -f "$f"
       continue
     fi
 
     # Send tmux notification on state change to permission/idle
-    if [ "$STATE" = "permission" ] || [ "$STATE" = "idle" ]; then
-      PREV="${PREV_STATES[$SESSION]:-}"
-      if [ "$PREV" != "$STATE" ] && [ -n "${TMUX:-}" ]; then
-        LABEL=$(state_label "$STATE")
+    if [ "$state" = "permission" ] || [ "$state" = "idle" ]; then
+      local prev="${PREV_STATES[$session]:-}"
+      if [ "$prev" != "$state" ] && [ -n "${TMUX:-}" ]; then
+        local label
+        label=$(state_label "$state")
         tmux set -g message-style "bg=#f7768e,fg=#1a1b26,bold"
-        tmux display-message -d 5000 "  🔔 $PROJECT: $LABEL - $MESSAGE  "
+        tmux display-message -d 5000 "  🔔 $project: $label - $message  "
         (sleep 6 && tmux set -g message-style "bg=#7aa2f7,fg=#1a1b26") &
       fi
     fi
-    PREV_STATES[$SESSION]="$STATE"
+    PREV_STATES[$session]="$state"
 
     # Sort priority: permission=0, idle=1, working=2, started=3, stopped=4
-    case "$STATE" in
-      permission) SORT_KEY="0" ;;
-      idle)       SORT_KEY="1" ;;
-      working)    SORT_KEY="2" ;;
-      started)    SORT_KEY="3" ;;
-      stopped)    SORT_KEY="4" ;;
-      *)          SORT_KEY="5" ;;
+    local sort_key
+    case "$state" in
+      permission) sort_key="0" ;;
+      idle)       sort_key="1" ;;
+      working)    sort_key="2" ;;
+      started)    sort_key="3" ;;
+      stopped)    sort_key="4" ;;
+      *)          sort_key="5" ;;
     esac
 
-    ICON=$(state_icon "$STATE")
-    LABEL=$(state_label "$STATE")
-    REL_TIME=$(relative_time "$TIMESTAMP")
-
-    # Build entry line
-    LINE=$(printf "  %s %-14s %-8s (%s)" "$ICON" "$PROJECT" "$LABEL" "$REL_TIME")
-    DETAIL=""
-    if [ "$STATE" = "permission" ] || [ "$STATE" = "idle" ]; then
-      DETAIL=$(printf "     └─ %s" "$MESSAGE")
-    fi
-
-    ENTRIES+=("${SORT_KEY}|${LINE}|${DETAIL}")
+    entries+=("${sort_key}|${project}|${state}|${message}|${tmux_pane}")
   done
 
   # Sort entries by priority
-  SORTED=()
-  if [ ${#ENTRIES[@]} -gt 0 ]; then
-    IFS=$'\n' SORTED=($(printf '%s\n' "${ENTRIES[@]}" | sort))
+  local sorted=()
+  if [ ${#entries[@]} -gt 0 ]; then
+    IFS=$'\n' sorted=($(printf '%s\n' "${entries[@]}" | sort))
     unset IFS
   fi
 
-  # Render dashboard
+  # Build indexed lists
+  PANE_IDS=()
+  ENTRY_LINES=()
+
+  local idx=1
+  for entry in "${sorted[@]}"; do
+    local project state message tmux_pane icon label
+    project=$(echo "$entry" | cut -d'|' -f2)
+    state=$(echo "$entry" | cut -d'|' -f3)
+    message=$(echo "$entry" | cut -d'|' -f4)
+    tmux_pane=$(echo "$entry" | cut -d'|' -f5)
+
+    icon=$(state_icon "$state")
+    label=$(state_label "$state")
+
+    PANE_IDS+=("$tmux_pane")
+
+    local line
+    line=$(printf " [%d] %s %-14s %s" "$idx" "$icon" "$project" "$label")
+    if [ "$state" = "permission" ] || [ "$state" = "idle" ]; then
+      line=$(printf "%s\n     └─ %s" "$line" "$message")
+    fi
+    ENTRY_LINES+=("$line")
+
+    idx=$((idx + 1))
+  done
+
+  # Render
   clear
-
-  TERM_COLS=$(tput cols 2>/dev/null || echo 40)
-  INNER=$((TERM_COLS - 2))
-  [ "$INNER" -lt 38 ] && INNER=38
-
-  # Header
-  printf "╔══ Claude Supervisor "
-  printf '═%.0s' $(seq 1 $((INNER - 20)))
-  printf "╗\n"
-
-  printf "║"
-  printf ' %.0s' $(seq 1 "$INNER")
-  printf "║\n"
-
-  if [ ${#SORTED[@]} -eq 0 ]; then
-    MSG="  No active Claude sessions"
-    printf "║  %-*s║\n" $((INNER - 2)) "$MSG"
+  if [ ${#ENTRY_LINES[@]} -eq 0 ]; then
+    echo " No active Claude sessions"
   else
-    for entry in "${SORTED[@]}"; do
-      LINE=$(echo "$entry" | cut -d'|' -f2)
-      DETAIL=$(echo "$entry" | cut -d'|' -f3)
-
-      printf "║  %-*s║\n" $((INNER - 2)) "$LINE"
-      if [ -n "$DETAIL" ]; then
-        printf "║  %-*s║\n" $((INNER - 2)) "$DETAIL"
-      fi
+    for line in "${ENTRY_LINES[@]}"; do
+      echo "$line"
     done
   fi
+}
 
-  printf "║"
-  printf ' %.0s' $(seq 1 "$INNER")
-  printf "║\n"
+# Execute a supervisor command
+execute_cmd() {
+  local cmd="$1"
 
-  # Footer
-  printf "╚"
-  printf '═%.0s' $(seq 1 "$INNER")
-  printf "╝\n"
+  # q: quit
+  if [ "$cmd" = "q" ]; then
+    cleanup
+  fi
 
-  sleep "$POLL_INTERVAL"
+  # Parse: {number}y, {number}n, {number} {text}, {number}
+  local num rest
+  if [[ "$cmd" =~ ^([0-9]+)y$ ]]; then
+    num="${BASH_REMATCH[1]}"
+    send_to_pane "$num" "y"
+  elif [[ "$cmd" =~ ^([0-9]+)n$ ]]; then
+    num="${BASH_REMATCH[1]}"
+    send_to_pane "$num" "n"
+  elif [[ "$cmd" =~ ^([0-9]+)[[:space:]]+(.+)$ ]]; then
+    num="${BASH_REMATCH[1]}"
+    rest="${BASH_REMATCH[2]}"
+    send_to_pane "$num" "$rest"
+  elif [[ "$cmd" =~ ^([0-9]+)$ ]]; then
+    num="${BASH_REMATCH[1]}"
+    jump_to_pane "$num"
+  fi
+}
+
+send_to_pane() {
+  local num="$1"
+  local text="$2"
+  local idx=$((num - 1))
+
+  if [ "$idx" -lt 0 ] || [ "$idx" -ge "${#PANE_IDS[@]}" ]; then
+    return
+  fi
+
+  local pane="${PANE_IDS[$idx]}"
+  if [ -z "$pane" ]; then
+    return
+  fi
+
+  tmux send-keys -t "$pane" "$text" Enter
+}
+
+jump_to_pane() {
+  local num="$1"
+  local idx=$((num - 1))
+
+  if [ "$idx" -lt 0 ] || [ "$idx" -ge "${#PANE_IDS[@]}" ]; then
+    return
+  fi
+
+  local pane="${PANE_IDS[$idx]}"
+  if [ -z "$pane" ]; then
+    return
+  fi
+
+  tmux select-pane -t "$pane"
+}
+
+# Main loop
+while true; do
+  render
+  printf "\n > "
+  tput cnorm 2>/dev/null  # show cursor for input
+
+  if read -r -t "$POLL_INTERVAL" CMD; then
+    CMD=$(echo "$CMD" | xargs)  # trim whitespace
+    if [ -n "$CMD" ]; then
+      execute_cmd "$CMD"
+    fi
+  fi
+  # timeout → re-render
 done
