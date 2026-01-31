@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/bin/claude-notify"
+            "command": "$HOME/bin/claude-notify"
           }
         ]
       }

@@ -223,7 +223,7 @@ ln -sf "$DOTFILES/.config/ssht/paths" ~/.config/ssht/paths
 
 # claude code settings
 mkdir -p ~/.claude
-cp -n "$DOTFILES/.claude/settings.json" ~/.claude/settings.json 2>/dev/null || true
+sed "s|\$HOME|$HOME|g" "$DOTFILES/.claude/settings.json" > ~/.claude/settings.json
 
 # vimrc
 ln -sf "$DOTFILES/.vimrc" ~/.vimrc

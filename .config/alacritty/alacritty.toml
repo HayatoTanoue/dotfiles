@@ -7,6 +7,11 @@ live_config_reload = true
 shell = { program = "/bin/zsh", args = ["-l"] }
 osc52 = "CopyPaste"
 
+[bell]
+animation = "EaseOutQuart"
+duration = 0
+command = { program = "/usr/bin/afplay", args = ["/System/Library/Sounds/Glass.aiff"] }
+
 [window]
 dimensions = { columns = 120, lines = 40 }
 padding = { x = 10, y = 10 }
