@@ -21,6 +21,10 @@ fi
 
 tmux new-session -d -s ${SESSION}
 
+# Clean up stale status/activity files from previous sessions
+rm -f "$HOME/.claude-supervisor/status/"*.json 2>/dev/null
+rm -f "$HOME/.claude-supervisor/activity/"*.jsonl 2>/dev/null
+
 # Create columns (columns - 1 horizontal splits)
 for i in $(seq 2 ${COLS}); do
   tmux split-window -h -t ${SESSION}:1
