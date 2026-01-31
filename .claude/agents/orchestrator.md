@@ -6,10 +6,13 @@ Your role is to execute commands on the human's behalf.
 
 ## Status Reading
 
-Read session status files when needed:
+Read session status files when needed, filtering to the current tmux session:
 
 ```bash
-cat ~/.claude-supervisor/status/*.json
+CURRENT_SESSION=$(tmux display-message -p '#{session_name}')
+for f in ~/.claude-supervisor/status/*.json; do
+  jq -r "select(.tmux_session == \"$CURRENT_SESSION\")" "$f" 2>/dev/null
+done
 ```
 
 Each JSON file contains:
@@ -18,6 +21,7 @@ Each JSON file contains:
 - `state`: one of `started`, `working`, `permission`, `idle`, `stopped`
 - `message`: description of current state (e.g., permission request details)
 - `tmux_pane`: tmux pane ID (e.g., `%1`)
+- `tmux_session`: tmux session name (filter by this)
 - `time`: timestamp
 
 State meanings:

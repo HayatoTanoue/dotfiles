@@ -8,6 +8,7 @@ set -euo pipefail
 STATUS_DIR="$HOME/.claude-supervisor/status"
 POLL_INTERVAL=2
 STALE_THRESHOLD=3600  # 1 hour in seconds
+CURRENT_TMUX_SESSION=$(tmux display-message -p '#{session_name}' 2>/dev/null || echo '')
 
 # State display config
 state_icon() {
@@ -56,15 +57,21 @@ render() {
   for f in "$STATUS_DIR"/*.json; do
     [ -f "$f" ] || continue
 
-    local session project state timestamp message tmux_pane
+    local session project state timestamp message tmux_pane tmux_session
     session=$(jq -r '.session // empty' "$f" 2>/dev/null)
     project=$(jq -r '.project // empty' "$f" 2>/dev/null)
     state=$(jq -r '.state // empty' "$f" 2>/dev/null)
     timestamp=$(jq -r '.time // empty' "$f" 2>/dev/null)
     message=$(jq -r '.message // empty' "$f" 2>/dev/null)
     tmux_pane=$(jq -r '.tmux_pane // empty' "$f" 2>/dev/null)
+    tmux_session=$(jq -r '.tmux_session // empty' "$f" 2>/dev/null)
 
     [ -z "$session" ] && continue
+
+    # Filter: only show sessions from the current tmux session
+    if [ -n "$CURRENT_TMUX_SESSION" ] && [ -n "$tmux_session" ] && [ "$tmux_session" != "$CURRENT_TMUX_SESSION" ]; then
+      continue
+    fi
 
     # Check for stale entries
     local local_now file_time age
