@@ -16,8 +16,10 @@ else
   if [ -n "$TMUX" ]; then
     TTY=$(tmux display-message -p '#{client_tty}')
     printf '\a' > "$TTY"
-    tmux set display-time 5000
-    tmux display-message -d 5000 "#[bg=#7aa2f7,fg=#1a1b26,bold]  Claude Code: $PROJECT 完了 #[default]"
+    tmux set -g message-style "bg=#f7768e,fg=#1a1b26,bold"
+    tmux display-message -d 5000 "  🔔 Claude Code: $PROJECT 完了  "
+    # restore original message style after display
+    (sleep 6 && tmux set -g message-style "bg=#7aa2f7,fg=#1a1b26") &
   else
     printf '\a'
   fi
