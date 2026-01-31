@@ -7,6 +7,11 @@ if [ "$(uname)" = "Darwin" ]; then
   afplay /System/Library/Sounds/Glass.aiff &
   osascript -e 'display notification "入力を待っています" with title "Claude Code"' 2>/dev/null
 else
-  # terminal bell - reaches local terminal through SSH/tmux
-  printf '\a'
+  # send bell to the current tmux client's tty
+  if [ -n "$TMUX" ]; then
+    TTY=$(tmux display-message -p '#{client_tty}')
+    printf '\a' > "$TTY"
+  else
+    printf '\a'
+  fi
 fi
