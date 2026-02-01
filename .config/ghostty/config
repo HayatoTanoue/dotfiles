@@ -1,0 +1,103 @@
+# Ghostty 基本設定
+
+# シェル
+command = /bin/zsh -l
+
+# ウィンドウ
+window-padding-x = 10
+window-padding-y = 10
+background-opacity = 0.92
+background-blur-radius = 20
+window-decoration = true
+macos-titlebar-style = native
+macos-option-as-alt = true
+window-theme = dark
+confirm-close-surface = false
+quit-after-last-window-closed = false
+window-inherit-working-directory = true
+focus-follows-mouse = true
+
+# カーソル
+cursor-style = bar
+cursor-style-blink = true
+
+# スクロールバック
+scrollback-limit = 100000
+
+# フォント
+font-family = Hack Nerd Font Mono
+font-size = 14
+adjust-cell-height = 2
+
+# クリップボード
+clipboard-read = allow
+clipboard-write = allow
+copy-on-select = clipboard
+clipboard-trim-trailing-spaces = true
+
+# マウス
+mouse-hide-while-typing = true
+
+# Tokyo Night テーマ
+background = 1a1b26
+foreground = c0caf5
+palette = 0=#15161e
+palette = 1=#f7768e
+palette = 2=#9ece6a
+palette = 3=#e0af68
+palette = 4=#7aa2f7
+palette = 5=#bb9af7
+palette = 6=#7dcfff
+palette = 7=#a9b1d6
+palette = 8=#414868
+palette = 9=#f7768e
+palette = 10=#9ece6a
+palette = 11=#e0af68
+palette = 12=#7aa2f7
+palette = 13=#bb9af7
+palette = 14=#7dcfff
+palette = 15=#c0caf5
+
+# === キーバインド ===
+
+# 基本操作
+keybind = super+n=new_window
+keybind = super+enter=toggle_fullscreen
+
+# tmux操作 (Cmd -> Ctrl+a prefix)
+# Cmd+T: 新しいtmuxウィンドウ
+keybind = super+t=text:\x01c
+# Cmd+W: 現在のペインを閉じる
+keybind = super+w=text:\x01x
+# Cmd+D: 縦分割
+keybind = super+d=text:\x01|
+# Cmd+Shift+D: 横分割
+keybind = super+shift+d=text:\x01-
+
+# Cmd+1-9: tmuxウィンドウ切り替え
+keybind = super+one=text:\x011
+keybind = super+two=text:\x012
+keybind = super+three=text:\x013
+keybind = super+four=text:\x014
+keybind = super+five=text:\x015
+keybind = super+six=text:\x016
+keybind = super+seven=text:\x017
+keybind = super+eight=text:\x018
+keybind = super+nine=text:\x019
+
+# Cmd+矢印: ペイン移動
+keybind = super+left=text:\x01h
+keybind = super+down=text:\x01j
+keybind = super+up=text:\x01k
+keybind = super+right=text:\x01l
+
+# Cmd+Shift+S: セッション一覧
+keybind = super+shift+s=text:\x01s
+
+# フォントサイズ (JISキーボード対応)
+# Cmd+Shift+; (= on JIS): フォントサイズ拡大
+keybind = super+shift+semicolon=increase_font_size:1
+# Cmd+-: フォントサイズ縮小
+keybind = super+minus=decrease_font_size:1
+# Cmd+0: フォントサイズリセット
+keybind = super+zero=reset_font_size
