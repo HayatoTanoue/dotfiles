@@ -26,3 +26,6 @@ COLOR="${COLORS[$INDEX]}"
 tmux set-option -g status-style "bg=#1a1b26,fg=#$COLOR"
 tmux set-option -g status-left "#[fg=#1a1b26,bg=#$COLOR,bold] #S "
 tmux set-option -g window-status-current-format "#[fg=#1a1b26,bg=#$COLOR,bold] #I:#W "
+
+# Update session list (2nd status line) highlight color
+tmux set-option -g status-format[1] "#[bg=#1a1b26,align=left]#{S:#[range=session|#{session_id} fg=#565f89 bg=#1a1b26]#[push-default] #S #[pop-default]#[norange default],#[range=session|#{session_id} list=focus fg=#1a1b26 bg=#$COLOR bold]#[push-default] #S #[pop-default]#[norange default]}"

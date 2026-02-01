@@ -83,6 +83,7 @@ ln -sf "$DOTFILES/bin/ssht" ~/bin/ssht
 ln -sf "$DOTFILES/bin/dev" ~/bin/dev
 ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
+ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
 
 # ssht config
 mkdir -p ~/.config/ssht
