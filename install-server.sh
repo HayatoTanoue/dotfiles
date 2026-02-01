@@ -24,6 +24,12 @@ if command -v apt-get &> /dev/null; then
     sudo apt-get update
     sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf jq locales poppler-utils btop nvtop
 
+    # bat is installed as batcat on Debian/Ubuntu
+    if command -v batcat &> /dev/null && ! command -v bat &> /dev/null; then
+        mkdir -p ~/.local/bin
+        ln -sf "$(which batcat)" ~/.local/bin/bat
+    fi
+
     # setup UTF-8 locale
     sudo locale-gen en_US.UTF-8
     sudo update-locale LANG=en_US.UTF-8
