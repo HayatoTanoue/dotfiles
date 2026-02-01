@@ -1,17 +1,17 @@
 #!/bin/bash
-# multi-claude - launch multiple Claude Code panes with orchestrator
-# Usage: multi-claude [1|2|3|4]
+# multi-claude - launch multiple Claude Code panes with monitoring
+# Usage: multi-claude [N] (default N=2)
 #
 # Layout:
-# ┌────────────┬──────────┐
-# │            │ Agent 1  │
-# │orchestrator├──────────┤
-# │            │ Agent 2  │
-# ├────────────┤  ...     │
-# │ supervisor │ Agent N  │
-# ├────────────┤          │
-# │ terminal   │          │
-# └────────────┴──────────┘
+# ┌──────────┬──────────┐
+# │  yazi    │ Agent 1  │
+# ├──────────┤──────────┤
+# │  btop    │ Agent 2  │
+# ├──────────┤  ...     │
+# │  nvtop   │ Agent N  │
+# └──────────┴──────────┘
+# Left 40% / Right 60%
+# Left side: yazi, btop, nvtop (equal thirds)
 
 AGENTS="${1:-2}"
 SESSION="multi-claude"
@@ -21,17 +21,19 @@ if tmux has-session -t ${SESSION} 2>/dev/null; then
   exit 0
 fi
 
-# Clean up stale status/activity files from previous sessions
-rm -f "$HOME/.claude-supervisor/status/"*.json 2>/dev/null
-rm -f "$HOME/.claude-supervisor/activity/"*.jsonl 2>/dev/null
-
-# Create session - initial pane becomes orchestrator
-ORCH_PANE=$(tmux new-session -d -s ${SESSION} -P -F '#{pane_id}')
+# Create session - initial pane becomes left-top (yazi)
+LEFT_TOP=$(tmux new-session -d -s ${SESSION} -P -F '#{pane_id}')
 
 # Split left (40%) / right (60%) - right side for agents
-FIRST_AGENT=$(tmux split-window -h -t "$ORCH_PANE" -p 60 -P -F '#{pane_id}')
+FIRST_AGENT=$(tmux split-window -h -t "$LEFT_TOP" -p 60 -P -F '#{pane_id}')
 
-# Split right side into N agent panes (evenly spaced)
+# Split left column into 3 equal panes: yazi (top) | btop (mid) | nvtop (bottom)
+# After first split: top 33%, bottom 67%
+LEFT_MID=$(tmux split-window -v -t "$LEFT_TOP" -p 67 -P -F '#{pane_id}')
+# Split remaining bottom into 2 equal: 50% each
+LEFT_BOT=$(tmux split-window -v -t "$LEFT_MID" -p 50 -P -F '#{pane_id}')
+
+# Split right side into N agent panes
 LAST_AGENT="$FIRST_AGENT"
 for i in $(seq 1 $((AGENTS - 1))); do
   REMAINING=$((AGENTS - i))
@@ -39,12 +41,10 @@ for i in $(seq 1 $((AGENTS - 1))); do
   LAST_AGENT=$(tmux split-window -v -t "$LAST_AGENT" -p $PCT -P -F '#{pane_id}')
 done
 
-# Split left column: orchestrator (50%) / supervisor (25%) / terminal (25%)
-tmux split-window -v -t "$ORCH_PANE" -p 50
-tmux split-window -v -t "$ORCH_PANE" -p 50 "claude-supervisor"
-
-# Start orchestrator in the top-left pane
-tmux send-keys -t "$ORCH_PANE" "claude-orchestrator" Enter
+# Launch monitoring tools in left panes
+tmux send-keys -t "$LEFT_TOP" 'yazi' Enter
+tmux send-keys -t "$LEFT_MID" 'btop' Enter
+tmux send-keys -t "$LEFT_BOT" 'nvtop 2>/dev/null || echo "nvtop not available"' Enter
 
 # Focus first agent pane
 tmux select-pane -t "$FIRST_AGENT"

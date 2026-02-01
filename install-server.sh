@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf jq locales poppler-utils
+    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf jq locales poppler-utils btop nvtop
 
     # setup UTF-8 locale
     sudo locale-gen en_US.UTF-8
@@ -191,6 +191,10 @@ source "$HOME/.cargo/env" 2>/dev/null || true
 ya pkg add BennyOe/tokyo-night 2>/dev/null || true
 ya pkg add yazi-rs/plugins:piper 2>/dev/null || true
 
+# btop config
+mkdir -p ~/.config/btop
+ln -sf "$DOTFILES/.config/btop/btop.conf" ~/.config/btop/btop.conf
+
 # cheat config
 mkdir -p ~/.config/cheat/cheatsheets
 ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
@@ -210,11 +214,6 @@ ln -sf "$DOTFILES/bin/dev" ~/bin/dev
 ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
 ln -sf "$DOTFILES/bin/tmux-status-color" ~/bin/tmux-status-color
-ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
-ln -sf "$DOTFILES/bin/claude-state-reporter" ~/bin/claude-state-reporter
-ln -sf "$DOTFILES/bin/claude-supervisor" ~/bin/claude-supervisor
-ln -sf "$DOTFILES/bin/claude-orchestrator" ~/bin/claude-orchestrator
-ln -sf "$DOTFILES/bin/claude-activity-logger" ~/bin/claude-activity-logger
 
 # tmuxinator config
 mkdir -p ~/.config/tmuxinator

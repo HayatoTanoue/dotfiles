@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi nvm glow poppler
+brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi nvm glow poppler btop
 brew install --cask font-hack-nerd-font
 
 # node (via nvm) + codex
@@ -77,11 +77,6 @@ ln -sf "$DOTFILES/bin/ssht" ~/bin/ssht
 ln -sf "$DOTFILES/bin/dev" ~/bin/dev
 ln -sf "$DOTFILES/bin/multi-claude" ~/bin/multi-claude
 ln -sf "$DOTFILES/bin/git-summary" ~/bin/git-summary
-ln -sf "$DOTFILES/bin/claude-notify" ~/bin/claude-notify
-ln -sf "$DOTFILES/bin/claude-state-reporter" ~/bin/claude-state-reporter
-ln -sf "$DOTFILES/bin/claude-supervisor" ~/bin/claude-supervisor
-ln -sf "$DOTFILES/bin/claude-orchestrator" ~/bin/claude-orchestrator
-ln -sf "$DOTFILES/bin/claude-activity-logger" ~/bin/claude-activity-logger
 
 # ssht config
 mkdir -p ~/.config/ssht
@@ -96,6 +91,10 @@ git config user.email "HayatoTanoue@users.noreply.github.com"
 ln -sfn "$DOTFILES/.config/yazi" ~/.config/yazi
 ya pkg add BennyOe/tokyo-night 2>/dev/null || true
 ya pkg add yazi-rs/plugins:piper 2>/dev/null || true
+
+# btop
+mkdir -p ~/.config/btop
+ln -sf "$DOTFILES/.config/btop/btop.conf" ~/.config/btop/btop.conf
 
 # starship
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml
