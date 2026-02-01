@@ -180,3 +180,22 @@ chars = "\u0001l"
 key = "S"
 mods = "Command|Shift"
 chars = "\u0001s"
+
+# === フォントサイズ (JISキーボード対応) ===
+# Cmd+Shift+; (= on JIS): フォントサイズ拡大
+[[keyboard.bindings]]
+key = "Semicolon"
+mods = "Command|Shift"
+action = "IncreaseFontSize"
+
+# Cmd+-: フォントサイズ縮小
+[[keyboard.bindings]]
+key = "Minus"
+mods = "Command"
+action = "DecreaseFontSize"
+
+# Cmd+0: フォントサイズリセット
+[[keyboard.bindings]]
+key = "Key0"
+mods = "Command"
+action = "ResetFontSize"
