@@ -43,5 +43,8 @@ DIR="${1:-.}"
 # エイリアス展開
 DIR=$(expand_alias "$DIR")
 
+# セッション名をディレクトリ名から生成 (dev-<basename>)
+SESSION_NAME="dev-$(basename "$(cd "$DIR" 2>/dev/null && pwd || echo "$DIR")")"
+
 # tmuxinator start dev
-tmuxinator start dev "$DIR"
+tmuxinator start dev "$DIR" "$SESSION_NAME"

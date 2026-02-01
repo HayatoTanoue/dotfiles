@@ -67,12 +67,19 @@ if [ -n "$DIR" ]; then
   DIR=$(expand_alias "$DIR")
 fi
 
-# セッション名（ディレクトリ指定時はディレクトリ名を使用）
-if [ -n "$DIR" ]; then
-  SESSION_NAME=$(basename "$DIR")
+# セッション名（dev-<basename> で統一）
+if [ "$MODE" = "dev" ]; then
+  if [ -n "$DIR" ]; then
+    SESSION_NAME="dev-$(basename "$DIR")"
+  else
+    SESSION_NAME="dev"
+  fi
 else
-  SESSION_NAME="${MODE}"
-  [ "$MODE" = "basic" ] && SESSION_NAME="main"
+  if [ -n "$DIR" ]; then
+    SESSION_NAME=$(basename "$DIR")
+  else
+    SESSION_NAME="main"
+  fi
 fi
 
 if [ "$MODE" = "dev" ]; then

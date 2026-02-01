@@ -10,7 +10,7 @@
 # │ lazygit  │   terminal       │  35%
 # └──────────┴──────────────────┘
 
-name: dev
+name: <%= @args[1] || "dev" %>
 root: <%= @args[0] || "." %>
 
 windows:
@@ -21,4 +21,4 @@ windows:
         - claude       # 右上: claude code
         - lazygit      # 左下: git
         -              # 右下: ターミナル
-          - tmux resize-pane -t dev:1.1 -y 65%
+          - tmux resize-pane -t '<%= @args[1] || "dev" %>:1.1' -y 65%
