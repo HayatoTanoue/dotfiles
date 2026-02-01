@@ -181,6 +181,12 @@ fi
 # tmux config
 ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
 
+# TPM (tmux plugin manager)
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "Installing TPM..."
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
 # starship config
 mkdir -p ~/.config
 ln -sf "$DOTFILES/.config/starship.toml" ~/.config/starship.toml

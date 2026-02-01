@@ -66,6 +66,12 @@ ln -sf "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheet
 # tmux
 ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
 
+# TPM (tmux plugin manager)
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "Installing TPM..."
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
 # tmuxinator
 mkdir -p ~/.config/tmuxinator
 ln -sf "$DOTFILES/.config/tmuxinator/dev.yml" ~/.config/tmuxinator/dev.yml
