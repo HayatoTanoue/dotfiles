@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi nvm glow poppler btop neovim
+brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi nvm glow poppler btop neovim micro
 brew install --cask font-hack-nerd-font
 
 # node (via nvm) + codex

@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf jq locales poppler-utils btop nvtop
+    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf jq locales poppler-utils btop nvtop micro
 
     # bat is installed as batcat on Debian/Ubuntu
     if command -v batcat &> /dev/null && ! command -v bat &> /dev/null; then

@@ -1,0 +1,48 @@
+---
+tags: [ editor ]
+---
+# micro - terminal text editor
+
+## 基本操作
+Ctrl+s                   # 保存
+Ctrl+q                   # 終了
+Ctrl+z                   # 元に戻す
+Ctrl+y                   # やり直し
+
+## 選択・コピペ
+Shift+矢印キー            # 選択
+Ctrl+a                   # 全選択
+Ctrl+c                   # コピー
+Ctrl+x                   # カット
+Ctrl+v                   # ペースト
+Ctrl+d                   # 行を複製
+
+## 検索・置換
+Ctrl+f                   # 検索
+Ctrl+n                   # 次の検索結果
+Ctrl+h                   # 置換
+
+## 移動
+Ctrl+g                   # 指定行にジャンプ
+Ctrl+Home/End            # ファイル先頭/末尾
+Home/End                 # 行頭/行末
+Ctrl+左/右               # 単語単位で移動
+
+## マルチカーソル
+Ctrl+Shift+Up/Down       # カーソルを上下に追加
+Ctrl+Shift+右            # 次の同じ単語を選択
+
+## タブ・分割
+Ctrl+t                   # 新しいタブ
+Alt+,/Alt+.              # タブ切り替え
+Ctrl+w                   # タブを閉じる
+Ctrl+e → hsplit/vsplit   # 画面分割
+
+## コマンドモード
+Ctrl+e                   # コマンドバーを開く
+  set colorscheme ...    # カラースキーム変更
+  set tabsize 4          # タブサイズ変更
+  help                   # ヘルプ表示
+
+## 設定ファイル
+# ~/.config/micro/settings.json
