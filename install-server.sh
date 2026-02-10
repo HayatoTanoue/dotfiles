@@ -87,6 +87,24 @@ if ! command -v lazygit &> /dev/null; then
     cd -
 fi
 
+# install neovim
+if ! command -v nvim &> /dev/null; then
+    echo "Installing Neovim..."
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ]; then
+        NVIM_ARCH="aarch64"
+    else
+        NVIM_ARCH="x86_64"
+    fi
+    curl -sLo /tmp/nvim.tar.gz "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${NVIM_ARCH}.tar.gz"
+    tar xzf /tmp/nvim.tar.gz -C /tmp
+    mkdir -p ~/.local/bin ~/.local/lib ~/.local/share
+    cp /tmp/nvim-linux-${NVIM_ARCH}/bin/nvim ~/.local/bin/
+    cp -r /tmp/nvim-linux-${NVIM_ARCH}/lib/nvim ~/.local/lib/
+    cp -r /tmp/nvim-linux-${NVIM_ARCH}/share/nvim ~/.local/share/
+    rm -rf /tmp/nvim-linux-${NVIM_ARCH} /tmp/nvim.tar.gz
+fi
+
 # install Claude Code
 if ! command -v claude &> /dev/null; then
     echo "Installing Claude Code..."
@@ -243,6 +261,9 @@ sed "s|\$HOME|$HOME|g" "$DOTFILES/.claude/settings.json" > ~/.claude/settings.js
 # claude code agents
 mkdir -p ~/.claude/agents
 ln -sfn "$DOTFILES/.claude/agents/dev-doc-architect" ~/.claude/agents/dev-doc-architect
+
+# neovim
+ln -sfn "$DOTFILES/.config/nvim" ~/.config/nvim
 
 # vimrc
 ln -sf "$DOTFILES/.vimrc" ~/.vimrc

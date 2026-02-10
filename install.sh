@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi nvm glow poppler btop
+brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi nvm glow poppler btop neovim
 brew install --cask font-hack-nerd-font
 
 # node (via nvm) + codex
@@ -100,6 +100,9 @@ sed "s|\$HOME|$HOME|g" "$DOTFILES/.claude/settings.json" > ~/.claude/settings.js
 # claude code agents
 mkdir -p ~/.claude/agents
 ln -sfn "$DOTFILES/.claude/agents/dev-doc-architect" ~/.claude/agents/dev-doc-architect
+
+# neovim
+ln -sfn "$DOTFILES/.config/nvim" ~/.config/nvim
 
 # vimrc
 ln -sf "$DOTFILES/.vimrc" ~/.vimrc
