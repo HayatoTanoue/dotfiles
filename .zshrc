@@ -2,6 +2,7 @@
 # Path & Environment
 # ============================================
 export PATH="$HOME/bin:$PATH"
+export EDITOR="micro"
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
