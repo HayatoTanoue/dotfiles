@@ -12,7 +12,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 echo "Installing packages..."
-brew install tmux tmuxinator cheat starship zsh-autosuggestions eza bat lazygit tig rust fzf yazi nvm glow poppler btop neovim micro
+brew install tmux tmuxinator cheat starship zsh-autosuggestions zsh-syntax-highlighting eza bat lazygit tig rust fzf yazi nvm glow poppler btop neovim micro
 brew install --cask font-hack-nerd-font
 
 # node (via nvm) + codex
@@ -37,7 +37,14 @@ if [ ! -d "$HOME/.zsh/fzf-tab" ]; then
     echo "Installing fzf-tab..."
     mkdir -p ~/.zsh
     git clone https://github.com/Aloxaf/fzf-tab ~/.zsh/fzf-tab
+else
+    echo "Updating fzf-tab..."
+    git -C "$HOME/.zsh/fzf-tab" pull --quiet
 fi
+
+# alacritty
+mkdir -p ~/.config/alacritty
+ln -sf "$DOTFILES/.config/alacritty/alacritty.toml" ~/.config/alacritty/alacritty.toml
 
 # ghostty
 brew install --cask ghostty

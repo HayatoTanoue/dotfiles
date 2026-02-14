@@ -22,7 +22,7 @@ find "$DOTFILES" -xtype l -delete 2>/dev/null || true
 if command -v apt-get &> /dev/null; then
     echo "Installing packages..."
     sudo apt-get update
-    sudo apt-get install -y zsh zsh-autosuggestions bat gpg wget unzip tig fzf jq locales poppler-utils btop nvtop micro
+    sudo apt-get install -y zsh zsh-autosuggestions zsh-syntax-highlighting bat gpg wget unzip tig fzf jq locales poppler-utils btop nvtop micro
 
     # bat is installed as batcat on Debian/Ubuntu
     if command -v batcat &> /dev/null && ! command -v bat &> /dev/null; then
@@ -54,13 +54,15 @@ if [ -z "$TMUX_CURRENT" ] || awk "BEGIN{exit (!($TMUX_CURRENT < $TMUX_REQUIRED))
     echo "Installing tmux >= $TMUX_REQUIRED from source..."
     sudo apt-get install -y libevent-dev ncurses-dev build-essential bison pkg-config
     TMUX_VERSION="3.5a"
-    cd /tmp
-    curl -sLO "https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz"
-    tar xf "tmux-${TMUX_VERSION}.tar.gz"
-    cd "tmux-${TMUX_VERSION}"
-    ./configure && make -j"$(nproc)"
-    sudo make install
-    cd /tmp && rm -rf "tmux-${TMUX_VERSION}" "tmux-${TMUX_VERSION}.tar.gz"
+    (
+        cd /tmp
+        curl -sLO "https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz"
+        tar xf "tmux-${TMUX_VERSION}.tar.gz"
+        cd "tmux-${TMUX_VERSION}"
+        ./configure && make -j"$(nproc)"
+        sudo make install
+    )
+    rm -rf "/tmp/tmux-${TMUX_VERSION}" "/tmp/tmux-${TMUX_VERSION}.tar.gz"
 fi
 
 # install starship
@@ -73,18 +75,19 @@ fi
 # install lazygit
 if ! command -v lazygit &> /dev/null; then
     echo "Installing lazygit..."
-    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-    ARCH=$(uname -m)
-    if [ "$ARCH" = "x86_64" ]; then
-        ARCH="x86_64"
-    elif [ "$ARCH" = "aarch64" ]; then
-        ARCH="arm64"
-    fi
-    curl -sLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_${ARCH}.tar.gz"
-    cd /tmp && tar xf lazygit.tar.gz lazygit
-    mkdir -p ~/.local/bin
-    mv lazygit ~/.local/bin/
-    cd -
+    (
+        LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+        ARCH=$(uname -m)
+        if [ "$ARCH" = "x86_64" ]; then
+            ARCH="x86_64"
+        elif [ "$ARCH" = "aarch64" ]; then
+            ARCH="arm64"
+        fi
+        curl -sLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_${ARCH}.tar.gz"
+        cd /tmp && tar xf lazygit.tar.gz lazygit
+        mkdir -p ~/.local/bin
+        mv lazygit ~/.local/bin/
+    )
 fi
 
 # install neovim
@@ -186,20 +189,22 @@ fi
 # install cheat
 if ! command -v cheat &> /dev/null; then
     echo "Installing cheat..."
-    cd /tmp
-    CHEAT_VERSION="4.4.2"
-    ARCH=$(uname -m)
-    if [ "$ARCH" = "x86_64" ]; then
-        ARCH="amd64"
-    elif [ "$ARCH" = "aarch64" ]; then
-        ARCH="arm64"
-    fi
-    curl -sLO "https://github.com/cheat/cheat/releases/download/${CHEAT_VERSION}/cheat-linux-${ARCH}.gz"
-    gunzip "cheat-linux-${ARCH}.gz"
-    chmod +x "cheat-linux-${ARCH}"
-    mkdir -p ~/.local/bin
-    mv "cheat-linux-${ARCH}" ~/.local/bin/cheat
-    cd -
+    (
+        cd /tmp
+        # NOTE: update version manually from https://github.com/cheat/cheat/releases
+        CHEAT_VERSION="4.4.2"
+        ARCH=$(uname -m)
+        if [ "$ARCH" = "x86_64" ]; then
+            ARCH="amd64"
+        elif [ "$ARCH" = "aarch64" ]; then
+            ARCH="arm64"
+        fi
+        curl -sLO "https://github.com/cheat/cheat/releases/download/${CHEAT_VERSION}/cheat-linux-${ARCH}.gz"
+        gunzip "cheat-linux-${ARCH}.gz"
+        chmod +x "cheat-linux-${ARCH}"
+        mkdir -p ~/.local/bin
+        mv "cheat-linux-${ARCH}" ~/.local/bin/cheat
+    )
 fi
 
 # tmux config
@@ -236,6 +241,9 @@ if [ ! -d "$HOME/.zsh/fzf-tab" ]; then
     echo "Installing fzf-tab..."
     mkdir -p ~/.zsh
     git clone https://github.com/Aloxaf/fzf-tab ~/.zsh/fzf-tab
+else
+    echo "Updating fzf-tab..."
+    git -C "$HOME/.zsh/fzf-tab" pull --quiet
 fi
 
 # bin scripts

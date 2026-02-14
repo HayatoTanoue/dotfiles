@@ -1,3 +1,5 @@
+.DS_Store
+
 # yazi flavors/plugins (installed by ya pkg add)
 .config/yazi/flavors/
 .config/yazi/plugins/
