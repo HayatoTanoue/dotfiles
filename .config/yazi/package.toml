@@ -1,0 +1,9 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:piper"
+rev = "6f50636"
+hash = "25aee698dd1081001008ce0cb1cc4da3"
+
+[[flavor.deps]]
+use = "BennyOe/tokyo-night"
+rev = "8e6296f"
+hash = "d9da921c3bd37ba32ee27a8a7a40461f"

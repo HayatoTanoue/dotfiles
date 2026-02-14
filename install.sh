@@ -55,7 +55,7 @@ ln -sf "$DOTFILES/.config/ghostty/config" ~/.config/ghostty/config
 # cheat
 mkdir -p ~/.config/cheat/cheatsheets
 ln -sf "$DOTFILES/.config/cheat/conf.yml" ~/.config/cheat/conf.yml
-ln -sf "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
+ln -sfn "$DOTFILES/.config/cheat/cheatsheets/personal" ~/.config/cheat/cheatsheets/personal
 
 # tmux
 ln -sf "$DOTFILES/.tmux.conf" ~/.tmux.conf
