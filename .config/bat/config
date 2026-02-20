@@ -1,0 +1,8 @@
+# bat configuration
+# See: bat --help
+
+# Style: header (filename) + grid (border lines), no line numbers
+--style=header,grid
+
+# Use terminal colors for better theme consistency
+--theme=ansi

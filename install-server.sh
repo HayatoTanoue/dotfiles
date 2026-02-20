@@ -47,6 +47,26 @@ if command -v apt-get &> /dev/null; then
     fi
 fi
 
+# install HackGen Nerd Font (Hack + Japanese monospace with Nerd Font icons)
+if ! fc-list 2>/dev/null | grep -qi "HackGen"; then
+    echo "Installing HackGen Nerd Font..."
+    HACKGEN_VERSION=$(curl -s "https://api.github.com/repos/yuru7/HackGen/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    mkdir -p ~/.local/share/fonts/HackGenNerd
+    curl -sLo /tmp/HackGen_NF.zip "https://github.com/yuru7/HackGen/releases/download/v${HACKGEN_VERSION}/HackGen_NF_v${HACKGEN_VERSION}.zip"
+    unzip -o /tmp/HackGen_NF.zip -d /tmp/HackGen_NF
+    cp /tmp/HackGen_NF/HackGen_NF_v${HACKGEN_VERSION}/*.ttf ~/.local/share/fonts/HackGenNerd/
+    rm -rf /tmp/HackGen_NF /tmp/HackGen_NF.zip
+    fc-cache -f
+fi
+
+# install CJK fonts
+if command -v apt-get &> /dev/null; then
+    if ! dpkg -s fonts-noto-cjk &> /dev/null 2>&1; then
+        echo "Installing Noto CJK fonts..."
+        sudo apt-get install -y fonts-noto-cjk
+    fi
+fi
+
 # install tmux (build from source for 3.3+ features)
 TMUX_REQUIRED="3.3"
 TMUX_CURRENT=$(tmux -V 2>/dev/null | awk '{print $2}' | tr -d 'a-z')
@@ -225,6 +245,10 @@ ln -sfn "$DOTFILES/.config/yazi" ~/.config/yazi
 source "$HOME/.cargo/env" 2>/dev/null || true
 ya pkg add BennyOe/tokyo-night 2>/dev/null || true
 ya pkg add yazi-rs/plugins:piper 2>/dev/null || true
+
+# bat config
+mkdir -p ~/.config/bat
+ln -sf "$DOTFILES/.config/bat/config" ~/.config/bat/config
 
 # btop config
 mkdir -p ~/.config/btop

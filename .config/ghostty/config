@@ -25,7 +25,7 @@ cursor-style-blink = true
 scrollback-limit = 100000
 
 # フォント
-font-family = Hack Nerd Font Mono
+font-family = HackGen35 Console NF
 font-size = 14
 adjust-cell-height = 2
 
@@ -34,6 +34,7 @@ clipboard-read = allow
 clipboard-write = allow
 copy-on-select = clipboard
 clipboard-trim-trailing-spaces = true
+clipboard-paste-protection = false
 
 # マウス
 mouse-hide-while-typing = true

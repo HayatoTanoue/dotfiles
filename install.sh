@@ -13,7 +13,7 @@ fi
 
 echo "Installing packages..."
 brew install tmux tmuxinator cheat starship zsh-autosuggestions zsh-syntax-highlighting eza bat lazygit tig rust fzf yazi nvm glow poppler btop neovim micro
-brew install --cask font-hack-nerd-font
+brew install --cask font-hackgen-nerd
 
 # node (via nvm) + codex
 export NVM_DIR="$HOME/.nvm"
@@ -92,6 +92,10 @@ git config user.email "HayatoTanoue@users.noreply.github.com"
 ln -sfn "$DOTFILES/.config/yazi" ~/.config/yazi
 ya pkg add BennyOe/tokyo-night 2>/dev/null || true
 ya pkg add yazi-rs/plugins:piper 2>/dev/null || true
+
+# bat
+mkdir -p ~/.config/bat
+ln -sf "$DOTFILES/.config/bat/config" ~/.config/bat/config
 
 # btop
 mkdir -p ~/.config/btop
