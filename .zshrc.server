@@ -35,9 +35,7 @@ source ~/dotfiles/.aliases
 # ============================================
 # Prompt
 # ============================================
-# Starship disabled on server (causes display issues via SSH)
-# eval "$(starship init zsh)"
-PROMPT='%n@%m:%~$ '
+eval "$(starship init zsh)"
 
 # ============================================
 # Claude Code helpers
