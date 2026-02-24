@@ -38,3 +38,15 @@ source ~/dotfiles/.aliases
 # Starship disabled on server (causes display issues via SSH)
 # eval "$(starship init zsh)"
 PROMPT='%n@%m:%~$ '
+
+# ============================================
+# Claude Code helpers
+# ============================================
+pr-review() {
+    if [ -z "$1" ]; then
+        echo "Usage: pr-review <PR-number>"
+        echo "Example: pr-review 47"
+        return 1
+    fi
+    claude --dangerously-skip-permissions "PR$1を pr-review-agentでレビューとちゃんと実APIを利用したevaluationのテストまで完了すること。"
+}
