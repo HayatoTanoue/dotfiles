@@ -1,0 +1,3 @@
+#!/bin/sh
+# no-op: notification disabled
+exit 0
