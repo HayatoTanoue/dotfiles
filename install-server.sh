@@ -169,6 +169,7 @@ fi
 if ! command -v ft &> /dev/null; then
     echo "Installing filetree..."
     source "$HOME/.cargo/env" 2>/dev/null || true
+    rustup update stable 2>/dev/null || true
     cargo install filetree
 fi
 
