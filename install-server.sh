@@ -159,17 +159,18 @@ if ! command -v tmuxinator &> /dev/null; then
 fi
 
 # install rust (for filetree)
+source "$HOME/.cargo/env" 2>/dev/null || true
 if ! command -v cargo &> /dev/null; then
     echo "Installing Rust..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     source "$HOME/.cargo/env"
+else
+    rustup update stable
 fi
 
 # install filetree
 if ! command -v ft &> /dev/null; then
     echo "Installing filetree..."
-    source "$HOME/.cargo/env" 2>/dev/null || true
-    rustup update stable 2>/dev/null || true
     cargo install filetree
 fi
 
